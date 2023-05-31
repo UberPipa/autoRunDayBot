@@ -5,16 +5,13 @@ import requests
 from data import linkLogIn, dataFormAuth, main_page, headear
 
 
-
-
-
 def startEndDay():
     try:
         session = requests.Session()
-        resource = session.post(linkLogIn, data=dataFormAuth, headers=headear)
+        session.post(linkLogIn, data=dataFormAuth, headers=headear)
         chrome_options = Options()
         # Делаем запуск скрытным
-        #chrome_options.add_argument('--headless')
+        chrome_options.add_argument('--headless')
         driver = webdriver.Chrome(options=chrome_options)
         # Устанавливает максимальное время на загрузку страницы
         driver.implicitly_wait(10)
@@ -29,16 +26,15 @@ def startEndDay():
         # закрываем вслывающее окно
         driver.find_element(By.XPATH, '//span[(@class="popup-window-close-icon popup-window-titlebar-close-icon")]').click()
         # выбиваем меню статуса работника
-        choice_work_time = driver.find_element(By.XPATH, '//div[(@id="timeman-container")]').click()
+        driver.find_element(By.XPATH, '//div[(@id="timeman-container")]').click()
         # жмякаем на кнопку start/end рабочее время
-        end_work = driver.find_element(By.XPATH, '//div[(@class="tm-popup-button-handler")]').click()
-        driver.quit()
+        driver.find_element(By.XPATH, '//div[(@class="tm-popup-button-handler")]').click()
+        # driver.quit()
+        driver.close()
         return True
     except Exception as ex:
         print(ex)
         return False
-    finally:
-        driver.quit()
 
 print(startEndDay())
 
