@@ -18,7 +18,7 @@ chrome_driver_path = os.path.join(chrome_driver_path, 'chromedriver.exe')
 url = 'https://bitrix.stdpr.ru/'
 
 chrome_options = Options()
-chrome_options.add_argument('--headless')
+#chrome_options.add_argument('--headless')
 
 
 service = Service(chrome_driver_path)
@@ -49,7 +49,7 @@ try:
     time.sleep(0.3)
     start_work = driver.find_element(By.XPATH, '//div[(@class="tm-popup-button-handler")]').click()
     time.sleep(0.3)
-    print('Готово')
+
 
 
 except Exception as ex:
