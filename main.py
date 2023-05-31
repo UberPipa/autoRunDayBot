@@ -5,17 +5,18 @@ import requests
 from dotenv import load_dotenv
 from selenium import webdriver
 
+
+#def ligIn_for_requests():
 load_dotenv()
 login = os.getenv('LOGIN')
 password = os.getenv('PASSWORD')
-
 
 session = requests.Session()
 user = fake_useragent.UserAgent().random
 headear = {
     'User-Agent': user
 }
-url = 'https://bitrix.stdpr.ru/auth/?login=yes&backurl=%2Fstream%2F'
+linkLogIn = os.getenv('LINKLOGIN')
 data = {
     'AUTH_FORM': 'Y',
     'TYPE': 'AUTH',
@@ -23,7 +24,7 @@ data = {
     'USER_LOGIN': login,
     'USER_PASSWORD': password
 }
-resource = session.post(url, data=data, headers=headear)
+resource = session.post(linkLogIn, data=data, headers=headear)
 
 main_page = 'https://bitrix.stdpr.ru/stream/'
 ###
@@ -38,6 +39,3 @@ for name, value in cookies.items():
 time.sleep(1)
 driver.get(main_page)
 time.sleep(3)
-
-
-
