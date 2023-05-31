@@ -7,6 +7,7 @@ from data import linkLogIn, dataFormAuth, main_page, headear
 
 def startEndDay():
     try:
+        # driver.implicitly_wait(10)
         session = requests.Session()
         session.post(linkLogIn, data=dataFormAuth, headers=headear)
         chrome_options = Options()
@@ -14,7 +15,6 @@ def startEndDay():
         chrome_options.add_argument('--headless')
         driver = webdriver.Chrome(options=chrome_options)
         # Устанавливает максимальное время на загрузку страницы
-        driver.implicitly_wait(10)
         # Забираем куки из сессии
         cookies = session.cookies.get_dict()
         driver.get(main_page)
@@ -36,15 +36,7 @@ def startEndDay():
         print(ex)
         return False
 
-print(startEndDay())
 
 
-# END
-# //*[@id="popup-window-content-timeman_main"]/div/div[2]/table/tbody/tr/td[2]/div
-# //*[@id="popup-window-content-timeman_main"]/div/div[2]/table/tbody/tr/td[2]/div/button
-# class="ui-btn ui-btn-danger ui-btn-icon-stop"
 
-# START
-# //*[@id="popup-window-content-timeman_main"]/div/div[2]/table/tbody/tr/td[2]/div
-# //*[@id="popup-window-content-timeman_main"]/div/div[2]/table/tbody/tr/td[2]/div/button
-# class="ui-btn ui-btn-success ui-btn-icon-start"
+
