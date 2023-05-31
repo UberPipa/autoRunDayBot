@@ -23,6 +23,7 @@ main_page = 'https://bitrix.stdpr.ru/stream/'
 
 session = requests.Session()
 user = fake_useragent.UserAgent().random
+
 headear = {
     'User-Agent': user
 }
@@ -36,20 +37,19 @@ data = {
 }
 resource = session.post(linkLogIn, data=data, headers=headear)
 
+chrome_options = Options()
+chrome_options.add_argument('--headless')
+
+
 cookies = session.cookies.get_dict()
-options = webdriver.ChromeOptions()
+#options = webdriver.ChromeOptions()
 
-driver = webdriver.Chrome(options=options)
-driver.get(main_page)
-for name, value in cookies.items():
-    driver.add_cookie({'name': name, 'value': value})
-
-
+driver = webdriver.Chrome(options=chrome_options)
 
 
 ###
-#chrome_options = Options()
-#chrome_options.add_argument('--headless')
+# chrome_options = Options()
+# chrome_options.add_argument('--headless')
 
 # service = Service(chrome_driver_path)
 # driver = webdriver.Chrome(
@@ -57,8 +57,10 @@ for name, value in cookies.items():
 #     options=chrome_options
 # )
 
-
 try:
+    driver.get(main_page)
+    for name, value in cookies.items():
+        driver.add_cookie({'name': name, 'value': value})
     driver.get(url=url)
     time.sleep(1)
     # name_input = driver.find_element(By.NAME, "USER_LOGIN")
@@ -73,8 +75,9 @@ try:
     time.sleep(0.3)
     end_work = driver.find_element(By.XPATH, '//div[(@class="tm-popup-button-handler")]').click()
     time.sleep(0.3)
-    start_work = driver.find_element(By.XPATH, '//div[(@class="tm-popup-button-handler")]').click()
-    time.sleep(1)
+    # start_work = driver.find_element(By.XPATH, '//div[(@class="tm-popup-button-handler")]').click()
+    # time.sleep(1)
+
 
 
 
