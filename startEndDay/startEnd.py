@@ -1,42 +1,191 @@
-from selenium import webdriver
-from selenium.webdriver.chrome.options import Options
-from selenium.webdriver.common.by import By
+import os
+import fake_useragent
 import requests
-from data import linkLogIn, dataFormAuth, main_page, headear
+from dotenv import load_dotenv
+from startEndDay.data import dataFormAuth, params, linkLogIn, headers, main_page
+
+session = requests.Session()
+
+""" Авторизация """
+auth = session.post(
+    linkLogIn,
+    headers=headers,
+    data=dataFormAuth
+)
 
 
-def startEndDay():
-    try:
-        # driver.implicitly_wait(10)
-        session = requests.Session()
-        session.post(linkLogIn, data=dataFormAuth, headers=headear)
-        chrome_options = Options()
-        # Делаем запуск скрытным
-        chrome_options.add_argument('--headless')
-        driver = webdriver.Chrome(options=chrome_options)
-        # Устанавливает максимальное время на загрузку страницы
-        # Забираем куки из сессии
-        cookies = session.cookies.get_dict()
-        driver.get(main_page)
-        # Раскидываем куки
-        for name, value in cookies.items():
-            driver.add_cookie({'name': name, 'value': value})
-        # Переходим на главную страницу
-        driver.get(url=main_page)
-        # закрываем вслывающее окно
-        driver.find_element(By.XPATH, '//span[(@class="popup-window-close-icon popup-window-titlebar-close-icon")]').click()
-        # выбиваем меню статуса работника
-        driver.find_element(By.XPATH, '//div[(@id="timeman-container")]').click()
-        # жмякаем на кнопку start/end рабочее время
-        driver.find_element(By.XPATH, '//div[(@class="tm-popup-button-handler")]').click()
-        # driver.quit()
-        driver.close()
-        return True
-    except Exception as ex:
-        print(ex)
-        return False
+main = session.get('https://bitrix.stdpr.ru/', headers=headers)
 
 
 
+cookies = session.cookies.get_dict()
 
 
+print(main.text)
+print(cookies)
+
+
+###
+# cookies = {
+#     'PHPSESSID': 't6u37BeSsejyL6mVBPXwvltpFO1tJ401',
+#     'BITRIX_CONVERSION_CONTEXT_s1': '^%^7B^%^22ID^%^22^%^3A4^%^2C^%^22EXPIRE^%^22^%^3A1685653140^%^2C^%^22UNIQUE^%^22^%^3A^%^5B^%^22conversion_visit_day^%^22^%^5D^%^7D',
+#     'BITRIX_SM_SALE_UID': '0',
+#     'BITRIX_SM_LOGIN': 'Privalov^%^40stdpr.ru',
+#     'BITRIX_SM_SOUND_LOGIN_PLAYED': 'Y',
+#     'BITRIX_SM_TIMEMAN_LAST_PAUSE_1969': '1685623629^%^7C1685623768',
+# }
+#
+# headers = {
+#     'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:109.0) Gecko/20100101 Firefox/113.0',
+#     'Accept': '*/*',
+#     'Accept-Language': 'ru-RU,ru;q=0.8,en-US;q=0.5,en;q=0.3',
+#     # 'Accept-Encoding': 'gzip, deflate, br',
+#     'Bx-ajax': 'true',
+#     'Content-Type': 'application/x-www-form-urlencoded',
+#     'X-Bitrix-Csrf-Token': '454792effb38485662be99c8d99fb323',
+#     'X-Bitrix-Site-Id': 's1',
+#     # 'Content-Length': '0',
+#     'Origin': 'https://bitrix.stdpr.ru',
+#     'Connection': 'keep-alive',
+#     'Referer': 'https://bitrix.stdpr.ru/stream/',
+#     # 'Cookie': 'PHPSESSID=t6u37BeSsejyL6mVBPXwvltpFO1tJ401; BITRIX_CONVERSION_CONTEXT_s1=^%^7B^%^22ID^%^22^%^3A4^%^2C^%^22EXPIRE^%^22^%^3A1685653140^%^2C^%^22UNIQUE^%^22^%^3A^%^5B^%^22conversion_visit_day^%^22^%^5D^%^7D; BITRIX_SM_SALE_UID=0; BITRIX_SM_LOGIN=Privalov^%^40stdpr.ru; BITRIX_SM_SOUND_LOGIN_PLAYED=Y; BITRIX_SM_TIMEMAN_LAST_PAUSE_1969=1685623629^%^7C1685623768',
+#     'Sec-Fetch-Dest': 'empty',
+#     'Sec-Fetch-Mode': 'cors',
+#     'Sec-Fetch-Site': 'same-origin',
+#     # Requests doesn't support trailers
+#     # 'TE': 'trailers',
+# }
+#
+# response = requests.post(
+#     'https://bitrix.stdpr.ru/bitrix/services/main/ajax.php?action=bitrix^%^3Atimeman.api.monitor.isAvailable',
+#     cookies=cookies,
+#     headers=headers,
+# )
+# ###
+# cookies = {
+#     'PHPSESSID': 't6u37BeSsejyL6mVBPXwvltpFO1tJ401',
+#     'BITRIX_CONVERSION_CONTEXT_s1': '^%^7B^%^22ID^%^22^%^3A4^%^2C^%^22EXPIRE^%^22^%^3A1685653140^%^2C^%^22UNIQUE^%^22^%^3A^%^5B^%^22conversion_visit_day^%^22^%^5D^%^7D',
+#     'BITRIX_SM_SALE_UID': '0',
+#     'BITRIX_SM_LOGIN': 'Privalov^%^40stdpr.ru',
+#     'BITRIX_SM_SOUND_LOGIN_PLAYED': 'Y',
+#     'BITRIX_SM_TIMEMAN_LAST_PAUSE_1969': '1685623629^%^7C1685623768',
+# }
+#
+# headers = {
+#     'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:109.0) Gecko/20100101 Firefox/113.0',
+#     'Accept': '*/*',
+#     'Accept-Language': 'ru-RU,ru;q=0.8,en-US;q=0.5,en;q=0.3',
+#     # 'Accept-Encoding': 'gzip, deflate, br',
+#     'Bx-ajax': 'true',
+#     'Content-Type': 'application/x-www-form-urlencoded',
+#     'Origin': 'https://bitrix.stdpr.ru',
+#     'Connection': 'keep-alive',
+#     'Referer': 'https://bitrix.stdpr.ru/stream/',
+#     # 'Cookie': 'PHPSESSID=t6u37BeSsejyL6mVBPXwvltpFO1tJ401; BITRIX_CONVERSION_CONTEXT_s1=^%^7B^%^22ID^%^22^%^3A4^%^2C^%^22EXPIRE^%^22^%^3A1685653140^%^2C^%^22UNIQUE^%^22^%^3A^%^5B^%^22conversion_visit_day^%^22^%^5D^%^7D; BITRIX_SM_SALE_UID=0; BITRIX_SM_LOGIN=Privalov^%^40stdpr.ru; BITRIX_SM_SOUND_LOGIN_PLAYED=Y; BITRIX_SM_TIMEMAN_LAST_PAUSE_1969=1685623629^%^7C1685623768',
+#     'Sec-Fetch-Dest': 'empty',
+#     'Sec-Fetch-Mode': 'cors',
+#     'Sec-Fetch-Site': 'same-origin',
+#     # Requests doesn't support trailers
+#     # 'TE': 'trailers',
+# }
+#
+# params = {
+#     'action': 'update',
+#     'site_id': 's1',
+#     'sessid': '454792effb38485662be99c8d99fb323',
+# }
+#
+# data = {
+#     'device': 'browser',
+# }
+#
+# response = requests.post(
+#     'https://bitrix.stdpr.ru/bitrix/tools/timeman.php',
+#     params=params,
+#     cookies=cookies,
+#     headers=headers,
+#     data=data,
+# )
+# ###
+# cookies = {
+#     'PHPSESSID': 't6u37BeSsejyL6mVBPXwvltpFO1tJ401',
+#     'BITRIX_CONVERSION_CONTEXT_s1': '^%^7B^%^22ID^%^22^%^3A4^%^2C^%^22EXPIRE^%^22^%^3A1685653140^%^2C^%^22UNIQUE^%^22^%^3A^%^5B^%^22conversion_visit_day^%^22^%^5D^%^7D',
+#     'BITRIX_SM_SALE_UID': '0',
+#     'BITRIX_SM_LOGIN': 'Privalov^%^40stdpr.ru',
+#     'BITRIX_SM_SOUND_LOGIN_PLAYED': 'Y',
+#     'BITRIX_SM_TIMEMAN_LAST_PAUSE_1969': '1685623629^%^7C1685623768',
+# }
+#
+# headers = {
+#     'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:109.0) Gecko/20100101 Firefox/113.0',
+#     'Accept': '*/*',
+#     'Accept-Language': 'ru-RU,ru;q=0.8,en-US;q=0.5,en;q=0.3',
+#     # 'Accept-Encoding': 'gzip, deflate, br',
+#     'Bx-ajax': 'true',
+#     'Content-Type': 'application/x-www-form-urlencoded',
+#     'X-Bitrix-Csrf-Token': '454792effb38485662be99c8d99fb323',
+#     'X-Bitrix-Site-Id': 's1',
+#     # 'Content-Length': '0',
+#     'Origin': 'https://bitrix.stdpr.ru',
+#     'Connection': 'keep-alive',
+#     'Referer': 'https://bitrix.stdpr.ru/stream/',
+#     # 'Cookie': 'PHPSESSID=t6u37BeSsejyL6mVBPXwvltpFO1tJ401; BITRIX_CONVERSION_CONTEXT_s1=^%^7B^%^22ID^%^22^%^3A4^%^2C^%^22EXPIRE^%^22^%^3A1685653140^%^2C^%^22UNIQUE^%^22^%^3A^%^5B^%^22conversion_visit_day^%^22^%^5D^%^7D; BITRIX_SM_SALE_UID=0; BITRIX_SM_LOGIN=Privalov^%^40stdpr.ru; BITRIX_SM_SOUND_LOGIN_PLAYED=Y; BITRIX_SM_TIMEMAN_LAST_PAUSE_1969=1685623629^%^7C1685623768',
+#     'Sec-Fetch-Dest': 'empty',
+#     'Sec-Fetch-Mode': 'cors',
+#     'Sec-Fetch-Site': 'same-origin',
+#     # Requests doesn't support trailers
+#     # 'TE': 'trailers',
+# }
+#
+# response = requests.post(
+#     'https://bitrix.stdpr.ru/bitrix/services/main/ajax.php?action=bitrix^%^3Atimeman.api.monitor.isEnableForCurrentUser',
+#     cookies=cookies,
+#     headers=headers,
+# )
+# ###
+# cookies = {
+#     'PHPSESSID': 't6u37BeSsejyL6mVBPXwvltpFO1tJ401',
+#     'BITRIX_CONVERSION_CONTEXT_s1': '^%^7B^%^22ID^%^22^%^3A4^%^2C^%^22EXPIRE^%^22^%^3A1685653140^%^2C^%^22UNIQUE^%^22^%^3A^%^5B^%^22conversion_visit_day^%^22^%^5D^%^7D',
+#     'BITRIX_SM_SALE_UID': '0',
+#     'BITRIX_SM_LOGIN': 'Privalov^%^40stdpr.ru',
+#     'BITRIX_SM_SOUND_LOGIN_PLAYED': 'Y',
+#     'BITRIX_SM_TIMEMAN_LAST_PAUSE_1969': '1685623629^%^7C1685623768',
+# }
+#
+# headers = {
+#     'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:109.0) Gecko/20100101 Firefox/113.0',
+#     'Accept': '*/*',
+#     'Accept-Language': 'ru-RU,ru;q=0.8,en-US;q=0.5,en;q=0.3',
+#     # 'Accept-Encoding': 'gzip, deflate, br',
+#     'Bx-ajax': 'true',
+#     'Content-Type': 'application/x-www-form-urlencoded',
+#     'Origin': 'https://bitrix.stdpr.ru',
+#     'Connection': 'keep-alive',
+#     'Referer': 'https://bitrix.stdpr.ru/stream/',
+#     # 'Cookie': 'PHPSESSID=t6u37BeSsejyL6mVBPXwvltpFO1tJ401; BITRIX_CONVERSION_CONTEXT_s1=^%^7B^%^22ID^%^22^%^3A4^%^2C^%^22EXPIRE^%^22^%^3A1685653140^%^2C^%^22UNIQUE^%^22^%^3A^%^5B^%^22conversion_visit_day^%^22^%^5D^%^7D; BITRIX_SM_SALE_UID=0; BITRIX_SM_LOGIN=Privalov^%^40stdpr.ru; BITRIX_SM_SOUND_LOGIN_PLAYED=Y; BITRIX_SM_TIMEMAN_LAST_PAUSE_1969=1685623629^%^7C1685623768',
+#     'Sec-Fetch-Dest': 'empty',
+#     'Sec-Fetch-Mode': 'cors',
+#     'Sec-Fetch-Site': 'same-origin',
+#     # Requests doesn't support trailers
+#     # 'TE': 'trailers',
+# }
+#
+# params = {
+#     'action': 'close',
+#     'site_id': 's1',
+#     'sessid': '454792effb38485662be99c8d99fb323',
+# }
+#
+# data = {
+#     'timestamp': '0',
+#     'report': '',
+#     'device': 'browser',
+# }
+#
+# response = requests.post(
+#     'https://bitrix.stdpr.ru/bitrix/tools/timeman.php',
+#     params=params,
+#     cookies=cookies,
+#     headers=headers,
+#     data=data,
+# )
