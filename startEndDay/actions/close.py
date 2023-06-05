@@ -2,28 +2,10 @@ import os
 from dotenv import load_dotenv
 import requests
 import fake_useragent
-
+from startEndDay.actions.siteFunctions import login_user
 
 session = requests.Session()
-
-load_dotenv()
-login = os.getenv('LOGIN')
-password = os.getenv('PASSWORD')
-
-user = fake_useragent.UserAgent().random
-headers = {
-    'User-Agent': user,
-}
-
-data = {
-    "AUTH_FORM": "Y",
-    "TYPE":	"AUTH",
-    "backurl":	"/",
-    f"USER_LOGIN":	login,
-    f"USER_PASSWORD":	password,
-}
-### 1
-auth = session.post('https://bitrix.stdpr.ru/?login=yes', headers=headers, data=data)
+session, headers = login_user(session)
 
 
 get_csrf = session.post('https://bitrix.stdpr.ru/bitrix/services/main/ajax.php?action=bitrix%3Atimeman.api.monitor.isEnableForCurrentUser', headers=headers)
@@ -47,7 +29,7 @@ get_close = session.post(f'https://bitrix.stdpr.ru/bitrix/tools/timeman.php', he
 
 
 cookies = session.cookies.get_dict()
-print(auth.request.url)
+print(get_close.request.url)
 print(' ')
 print(get_close.text)
 print(' ')
