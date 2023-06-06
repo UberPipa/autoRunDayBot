@@ -2,8 +2,8 @@ import json
 from typing import Union
 import requests
 
-from tgbot.startEndDay.data import headers
-from tgbot.startEndDay.data import login, password
+from bot.startEndDay.data import headers
+from bot.startEndDay.data import login, password
 
 
 def getting_start(login, password) -> Union[object, dict]:
