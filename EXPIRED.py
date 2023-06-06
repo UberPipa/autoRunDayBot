@@ -2,7 +2,6 @@ import os
 from dotenv import load_dotenv
 import requests
 import fake_useragent
-from startEndDay.actions.siteFunctions import login_user, check_status
 
 session = requests.Session()
 load_dotenv()

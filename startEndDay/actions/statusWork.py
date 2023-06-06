@@ -1,19 +1,19 @@
-import os
+import json
 from typing import Union
-from dotenv import load_dotenv
 import requests
-import fake_useragent
 
-from startEndDay.data import headers
+from startEndDay.actions.data import headers
+from startEndDay.actions.data import login, password
 
 
-def check_status(session, login, password) -> Union[object, dict]:
+def getting_start(login, password) -> Union[object, dict]:
     """
 
          Функция логинит пользователя, получает csrf токен и получает статус.
          После этой функции можно совершать дейтсвия с аккаунтом.
 
     """
+    session = requests.Session()
     session.post(
         'https://bitrix.stdpr.ru',
         headers=headers,
@@ -52,6 +52,10 @@ def check_status(session, login, password) -> Union[object, dict]:
             "sessid": csrf,
         }
     )
+    status = get_status.text.replace("'", "\"")
+    status = json.loads(status)
+    return session, status, csrf
 
-    status = get_status.text
-    return session, headers, status, csrf
+
+session, status, csrf = getting_start(login, password)
+print(status)
