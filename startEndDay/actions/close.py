@@ -13,7 +13,7 @@ csrf = get_csrf.headers.get('X-Bitrix-New-Csrf')
 
 
 params = {
-    "timestamp": "0",
+    "timestamp": "0", # Время завершение, попробовать поковырять
     "report": "",
     "device": "browser",
 }

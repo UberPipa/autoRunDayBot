@@ -2,12 +2,12 @@ import os
 from dotenv import load_dotenv
 import requests
 import fake_useragent
-from startEndDay.actions.siteFunctions import login_user, get_status
+from startEndDay.actions.siteFunctions import login_user, check_status
 
 
 def close_day():
     session = requests.Session()
-    session, headers, status, csrf = get_status(session)
+    session, headers, status, csrf = check_status(session)
 
     ### Тут нужна проверка статуса перед выполнением
 

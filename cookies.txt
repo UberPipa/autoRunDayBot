@@ -1,4 +1,0 @@
-<Cookie PHPSESSID=bQopOchkSOdIviE3keRYskQJ7cavlGHa for bitrix.stdpr.ru/>
-<Cookie BITRIX_SM_SALE_UID=0 for bitrix.stdpr.ru/>
-<Cookie BITRIX_SM_LOGIN=Privalov%40stdpr.ru for bitrix.stdpr.ru/>
-<Cookie BITRIX_SM_SOUND_LOGIN_PLAYED=Y for bitrix.stdpr.ru/>
