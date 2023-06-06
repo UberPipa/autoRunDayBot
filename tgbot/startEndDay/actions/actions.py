@@ -1,5 +1,5 @@
-from startEndDay.actions.data import login, password, headers
-from startEndDay.actions.statusWork import getting_start
+from tgbot.startEndDay.data import login, password, headers
+from tgbot.startEndDay.actions.statusWork import getting_start
 
 
 def close_day(session, csrf) -> None:

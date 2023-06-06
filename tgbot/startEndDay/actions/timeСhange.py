@@ -1,5 +1,5 @@
-from startEndDay.actions.data import login, password
-from startEndDay.actions.statusWork import getting_start
+from tgbot.startEndDay.data import login, password
+from tgbot.startEndDay.actions.statusWork import getting_start
 
 
 def change_startEnd_day(session, csrf, open_time, close_time, report='ㅤ') -> None:
