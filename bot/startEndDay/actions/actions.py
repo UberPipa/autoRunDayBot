@@ -78,7 +78,6 @@ def open_day(session, csrf) -> None:
     """
 
         Функция открывает рабочий день.
-        В можно сразу указать рабочее время, должен быть report!
 
     """
     open = session.post(
@@ -128,7 +127,7 @@ def forgot_day(session, csrf, close_time='0', report='ㅤ') -> None:
 
 
 session, status, csrf = getting_start(login, password)
-#open_day(session, csrf)
+reopen_day(session, csrf)
 
 
 

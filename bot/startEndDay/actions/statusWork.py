@@ -57,5 +57,5 @@ def getting_start(login, password) -> Union[object, dict]:
     return session, status, csrf
 
 
-session, status, csrf = getting_start(login, password)
-print(status)
+# session, status, csrf = getting_start(login, password)
+# print(status)

@@ -2,7 +2,7 @@ from aiogram import Dispatcher
 from aiogram.types import Message
 from aiogram import Dispatcher, types
 
-async def echo(msg: Message):
+async def echo(msg: Message) -> None:
     """ Эхо функция """
     await msg.delete()
 
