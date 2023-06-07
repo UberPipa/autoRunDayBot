@@ -6,7 +6,16 @@ from bot.startEndDay.data import headers
 from bot.startEndDay.data import login, password
 
 
-async def getting_start(login, password) -> Union[object, dict]:
+async def check_auth(authorization) -> Union[bool]:
+    result_auth = authorization.text.find('Неверный')
+    if result_auth <= 0:
+        return False
+    else:
+        return True
+
+
+
+async def getting_start(login, password) -> Union[object, dict, bool]:
     """
 
          Функция логинит пользователя, получает csrf токен и получает статус.
@@ -14,7 +23,7 @@ async def getting_start(login, password) -> Union[object, dict]:
 
     """
     session = requests.Session()
-    session.post(
+    authorization = session.post(
         'https://bitrix.stdpr.ru',
         headers=headers,
         data={
@@ -30,31 +39,35 @@ async def getting_start(login, password) -> Union[object, dict]:
         }
     )
 
-    get_csrf = session.post(
-        'https://bitrix.stdpr.ru/bitrix/services/main/ajax.php',
-        headers=headers,
-        params={
-            "action": "bitrix:timeman.api.monitor.isAvailable",
-        }
-    )
-    csrf = get_csrf.headers.get(
-        'X-Bitrix-New-Csrf'
-    )
+    result_auth = await check_auth(authorization)
+    if result_auth:
+        get_csrf = session.post(
+            'https://bitrix.stdpr.ru/bitrix/services/main/ajax.php',
+            headers=headers,
+            params={
+                "action": "bitrix:timeman.api.monitor.isAvailable",
+            }
+        )
+        csrf = get_csrf.headers.get(
+            'X-Bitrix-New-Csrf'
+        )
 
-    get_status = session.post(
-        "https://bitrix.stdpr.ru/bitrix/tools/timeman.php",
-        data={
-            "device": "browser",
-        },
-        params={
-            "action": "update",
-            "site_id": "s1",
-            "sessid": csrf,
-        }
-    )
-    status = get_status.text.replace("'", "\"")
-    status = json.loads(status)
-    return session, status, csrf
+        get_status = session.post(
+            "https://bitrix.stdpr.ru/bitrix/tools/timeman.php",
+            data={
+                "device": "browser",
+            },
+            params={
+                "action": "update",
+                "site_id": "s1",
+                "sessid": csrf,
+            }
+        )
+        status = get_status.text.replace("'", "\"")
+        status = json.loads(status)
+        return session, status, csrf
+    else:
+        return False, False, False
 
 
 # session, status, csrf = getting_start(login, password)

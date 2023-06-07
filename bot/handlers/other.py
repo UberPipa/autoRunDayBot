@@ -1,5 +1,6 @@
 from aiogram.types import Message
 from aiogram import Dispatcher, types, Bot
+from bot.keyboards.reply import startEnd_reply_kbr
 
 
 async def first_blood(msg: Message) -> None:
@@ -7,12 +8,7 @@ async def first_blood(msg: Message) -> None:
     print("Я в first_blood")
     bot: Bot = msg.bot
     await msg.delete()
-    keyboard = types.ReplyKeyboardMarkup(resize_keyboard=True)
-    button1 = types.KeyboardButton('Начать день')
-    button2 = types.KeyboardButton('Завершить день')
-    button3 = types.KeyboardButton('Статус')
-    keyboard.add(button1, button2, button3)
-    await msg.answer(text='Выберите кнопку:', reply_markup=keyboard)
+    await msg.answer(text='Выберите кнопку:', reply_markup=startEnd_reply_kbr)
 
 
 async def echo(msg: Message) -> None:

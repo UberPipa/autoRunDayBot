@@ -3,7 +3,7 @@ import json
 from bot.startEndDay.data import login, password, headers
 
 
-async def close_day(session, csrf) -> None:
+async def close_day(session, csrf):
     """
 
         Функция закрывает рабочий день.
@@ -27,7 +27,7 @@ async def close_day(session, csrf) -> None:
     return status
 
 
-async def reopen_day(session, csrf) -> None:
+async def reopen_day(session, csrf):
     """
 
         Функция переоткрывает рабочий день.
@@ -51,7 +51,7 @@ async def reopen_day(session, csrf) -> None:
     return status
 
 
-async def pause_day(session, csrf) -> None:
+async def pause_day(session, csrf):
     """
 
         Функция ставит на паузу рабочий день.
@@ -75,7 +75,7 @@ async def pause_day(session, csrf) -> None:
     return status
 
 
-async def open_day(session, csrf) -> None:
+async def open_day(session, csrf):
     """
 
         Функция открывает рабочий день.
@@ -99,7 +99,7 @@ async def open_day(session, csrf) -> None:
     return status
 
 
-async def forgot_day(session, csrf, close_time='0', report='ㅤ') -> None:
+async def forgot_day(session, csrf, close_time='0', report='ㅤ'):
     """
 
         Функция закрывает предыдущий рабочий день.
