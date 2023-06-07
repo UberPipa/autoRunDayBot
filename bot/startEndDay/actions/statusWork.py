@@ -6,7 +6,7 @@ from bot.startEndDay.data import headers
 from bot.startEndDay.data import login, password
 
 
-def getting_start(login, password) -> Union[object, dict]:
+async def getting_start(login, password) -> Union[object, dict]:
     """
 
          Функция логинит пользователя, получает csrf токен и получает статус.

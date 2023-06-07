@@ -1,8 +1,9 @@
+import json
+
 from bot.startEndDay.data import login, password, headers
-from bot.startEndDay.actions.statusWork import getting_start
 
 
-def close_day(session, csrf) -> None:
+async def close_day(session, csrf) -> None:
     """
 
         Функция закрывает рабочий день.
@@ -23,10 +24,10 @@ def close_day(session, csrf) -> None:
         }
     )
     status = close.text
-    print(status)
+    return status
 
 
-def reopen_day(session, csrf) -> None:
+async def reopen_day(session, csrf) -> None:
     """
 
         Функция переоткрывает рабочий день.
@@ -47,10 +48,10 @@ def reopen_day(session, csrf) -> None:
         }
     )
     status = reopen.text
-    print(status)
+    return status
 
 
-def pause_day(session, csrf) -> None:
+async def pause_day(session, csrf) -> None:
     """
 
         Функция ставит на паузу рабочий день.
@@ -71,10 +72,10 @@ def pause_day(session, csrf) -> None:
         }
     )
     status = pause.text
-    print(status)
+    return status
 
 
-def open_day(session, csrf) -> None:
+async def open_day(session, csrf) -> None:
     """
 
         Функция открывает рабочий день.
@@ -95,10 +96,10 @@ def open_day(session, csrf) -> None:
         }
     )
     status = open.text
-    print(status)
+    return status
 
 
-def forgot_day(session, csrf, close_time='0', report='ㅤ') -> None:
+async def forgot_day(session, csrf, close_time='0', report='ㅤ') -> None:
     """
 
         Функция закрывает предыдущий рабочий день.
@@ -120,14 +121,14 @@ def forgot_day(session, csrf, close_time='0', report='ㅤ') -> None:
         }
     )
     status = close_last_day.text
-    print(status)
+    return status
 
 
 
 
 
-session, status, csrf = getting_start(login, password)
-reopen_day(session, csrf)
+# session, status, csrf = getting_start(login, password)
+# reopen_day(session, csrf)
 
 
 
