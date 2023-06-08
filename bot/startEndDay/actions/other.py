@@ -14,16 +14,3 @@ async def check_auth(authorization) -> Union[bool]:
     else:
         return False
 
-
-async def reform_result(status):
-    """
-
-
-
-    """
-    if status.find("Уже находится в данном состоянии"):
-        return False
-    else:
-        status.replace("'", "\"")
-        status = json.loads(status)
-        return status

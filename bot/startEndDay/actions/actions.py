@@ -1,6 +1,4 @@
 import json
-
-from bot.startEndDay.actions.other import reform_result
 from bot.startEndDay.data import login, password, headers
 
 
