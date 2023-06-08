@@ -5,7 +5,7 @@ from bot.keyboards.reply import startEnd_reply_kbr
 
 async def first_blood(msg: Message) -> None:
     """ Функция для 1‑го запуска """
-    print("Я в first_blood")
+    # print("Я в first_blood")
     bot: Bot = msg.bot
     await msg.delete()
     await msg.answer(text='Выберите кнопку:', reply_markup=startEnd_reply_kbr)
@@ -13,7 +13,7 @@ async def first_blood(msg: Message) -> None:
 
 async def echo(msg: Message) -> None:
     """ Эхо функция """
-    print("Я в echo")
+    # print("Я в echo")
     await msg.delete()
 
 

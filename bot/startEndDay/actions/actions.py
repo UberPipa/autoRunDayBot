@@ -1,5 +1,6 @@
 import json
 
+from bot.startEndDay.actions.other import reform_result
 from bot.startEndDay.data import login, password, headers
 
 
@@ -23,7 +24,8 @@ async def close_day(session, csrf):
             "sessid": csrf,
         }
     )
-    status = close.text
+    status = close.text.replace("'", "\"")
+    status = json.loads(status)
     return status
 
 
@@ -47,7 +49,8 @@ async def reopen_day(session, csrf):
             "sessid": csrf,
         }
     )
-    status = reopen.text
+    status = reopen.text.replace("'", "\"")
+    status = json.loads(status)
     return status
 
 
@@ -72,6 +75,8 @@ async def pause_day(session, csrf):
         }
     )
     status = pause.text
+    status = status.replace("'", "\"")
+    status = json.loads(status)
     return status
 
 
@@ -95,7 +100,8 @@ async def open_day(session, csrf):
             "sessid": csrf,
         }
     )
-    status = open.text
+    status = open.text.replace("'", "\"")
+    status = json.loads(status)
     return status
 
 
@@ -120,7 +126,9 @@ async def forgot_day(session, csrf, close_time='0', report='ㅤ'):
             "sessid": csrf,
         }
     )
-    status = close_last_day.text
+    status = close_last_day.text.replace("'", "\"")
+    print(status)
+    status = json.loads(status)
     return status
 
 

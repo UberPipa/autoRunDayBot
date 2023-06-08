@@ -1,17 +1,9 @@
 import json
 from typing import Union
 import requests
-
+from bot.startEndDay.actions.other import check_auth
 from bot.startEndDay.data import headers
-from bot.startEndDay.data import login, password
 
-
-async def check_auth(authorization) -> Union[bool]:
-    result_auth = authorization.text.find('Неверный')
-    if result_auth <= 0:
-        return False
-    else:
-        return True
 
 
 
