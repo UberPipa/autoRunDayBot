@@ -5,7 +5,11 @@ from bot.startEndDay.actions.statusWork import getting_start
 
 
 async def openReopen_day(msg: types.Message) -> None:
-    """ Открывает или переоткрывает рабочий день """
+    """
+
+        Переоткрывает рабочий день
+
+    """
     session, status, csrf = await getting_start(login, password)
     if status:
         if status['STATE'] == 'OPENED':
@@ -18,6 +22,11 @@ async def openReopen_day(msg: types.Message) -> None:
 
 
 async def closed_day(msg: types.Message) -> None:
+    """
+
+        Закрывает рабочий день
+
+    """
     session, status, csrf = await getting_start(login, password)
     if status:
         if status['STATE'] == 'CLOSED':
@@ -30,6 +39,11 @@ async def closed_day(msg: types.Message) -> None:
 
 
 async def get_status(msg: types.Message) -> None:
+    """
+
+        Получает текущий статус
+
+    """
     session, status, csrf = await getting_start(login, password)
     if status:
         status = status['STATE']

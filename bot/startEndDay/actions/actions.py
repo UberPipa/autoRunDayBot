@@ -74,8 +74,7 @@ async def pause_day(session, csrf):
             "sessid": csrf,
         }
     )
-    status = pause.text
-    status = status.replace("'", "\"")
+    status = pause.text.replace("'", "\"")
     status = json.loads(status)
     return status
 
@@ -127,7 +126,6 @@ async def forgot_day(session, csrf, close_time='0', report='ㅤ'):
         }
     )
     status = close_last_day.text.replace("'", "\"")
-    print(status)
     status = json.loads(status)
     return status
 
