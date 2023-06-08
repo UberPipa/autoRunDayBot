@@ -1,20 +1,19 @@
-from peewee import Model, SqliteDatabase, CharField
+from peewee import Model, SqliteDatabase, CharField, IntegerField
 
 db = SqliteDatabase('users.db')
 
 
-class _BaseModel(Model):
+class BaseModel(Model):
     class Meta:
         database = db
 
 
-class Users(_BaseModel):
-    user_id = CharField(unique=True, primary_key=True)
-    chat_id = CharField(unique=True)
-    login = CharField(max_length=50)
-    password = CharField(max_length=50)
+class Users(BaseModel):
+    user_id = IntegerField(unique=True, primary_key=True)
+    login = CharField(max_length=50, null=True)
+    password = CharField(max_length=50, null=True)
 
 
 def register_models() -> None:
-    for model in _BaseModel.__subclasses__():
+    for model in BaseModel.__subclasses__():
         model.create_table()
