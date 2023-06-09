@@ -1,26 +1,34 @@
+from aiogram.dispatcher import FSMContext
 from aiogram.types import Message
 from aiogram import Dispatcher, types, Bot
+
+from bot.database.methods.other import checkLogoPass
 from bot.keyboards.reply import startEnd_reply_kbr
-from bot.database.methods.create import create_user
+from bot.database.methods.create import create_user, get_yes_or_no
+from bot.misc.states import firstUse
 
 
-async def first_blood(msg: Message) -> None:
+async def first_blood(msg: Message, state: FSMContext) -> None:
     """ Функция для 1‑го запуска """
-    # print("Я в first_blood")
     bot: Bot = msg.bot
     user_id = msg.from_user.id
     await msg.delete()
-    await create_user(int(user_id))
-    await msg.answer(text='Выберите кнопку:', reply_markup=startEnd_reply_kbr)
+    if not await get_yes_or_no(user_id):
+        await create_user(int(user_id))
+    # Проверяем на присутсвие логопаса
+    if not await checkLogoPass(user_id):
+        await state.set_state(firstUse.INPUT_LOGIN)
+        await msg.answer(text='Введите ваш логин.')
+    else:
+        await msg.answer(text='Выберите кнопку:', reply_markup=startEnd_reply_kbr)
 
 
 async def echo(msg: Message) -> None:
     """ Эхо функция """
-    # print("Я в echo")
     await msg.delete()
 
 
 def register_other_handlers(dp: Dispatcher) -> None:
-    dp.register_message_handler(first_blood, commands=['start'])
+    dp.register_message_handler(first_blood, commands=['start'], state="*")
     """ ЭХО ФУНКЦИЯ ВСЕГДА ДОЛЖНА БЫТЬ В САМОМ НИЗУ!!! """
     dp.register_message_handler(echo, content_types=types.ContentType.ANY)
