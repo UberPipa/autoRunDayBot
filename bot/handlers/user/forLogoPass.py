@@ -38,7 +38,7 @@ async def changeLogopass(msg: Message, state: FSMContext) -> None:
 
 
 async def cancel(msg: Message, state: FSMContext) -> None:
-    """ Команда для изменения логопаса """
+    """ Для кнопки отмены """
     await state.finish()
     await first_blood(msg, state)
 
