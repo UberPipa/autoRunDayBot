@@ -1,15 +1,18 @@
 from aiogram import Dispatcher, types
-from bot.startEndDay.data import login, password
 from bot.startEndDay.actions.actions import reopen_day, close_day
 from bot.startEndDay.actions.statusWork import getting_start
+from bot.database.models.main import Users
 
 
 async def openReopen_day(msg: types.Message) -> None:
     """
 
-        Переоткрывает рабочий день
+        Переоткрывает рабочий день. Пока только это!!!!!!!!!
 
     """
+    user = Users.get_by_id(msg.from_user.id)
+    login = user.login
+    password = user.password
     session, status, csrf = await getting_start(login, password)
     if status:
         if status['STATE'] == 'OPENED':
@@ -27,6 +30,9 @@ async def closed_day(msg: types.Message) -> None:
         Закрывает рабочий день
 
     """
+    user = Users.get_by_id(msg.from_user.id)
+    login = user.login
+    password = user.password
     session, status, csrf = await getting_start(login, password)
     if status:
         if status['STATE'] == 'CLOSED':
@@ -44,6 +50,9 @@ async def get_status(msg: types.Message) -> None:
         Получает текущий статус
 
     """
+    user = Users.get_by_id(msg.from_user.id)
+    login = user.login
+    password = user.password
     session, status, csrf = await getting_start(login, password)
     if status:
         status = status['STATE']
