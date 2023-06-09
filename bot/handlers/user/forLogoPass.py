@@ -1,10 +1,8 @@
 from aiogram.dispatcher import FSMContext
 from aiogram.types import Message, KeyboardButton, ReplyKeyboardMarkup
-from aiogram import Dispatcher, types, Bot
-from bot.database.methods.other import checkLogoPass
+from aiogram import Dispatcher
 from bot.handlers.other import first_blood
 from bot.keyboards.reply import startEnd_reply_kbr
-from bot.database.methods.create import create_user, get_yes_or_no
 from bot.misc.states import firstUse
 from bot.database.models.main import Users
 

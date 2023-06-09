@@ -1,5 +1,5 @@
 import json
-from bot.startEndDay.data import login, password, headers
+from bot.startEndDay.data import headers
 
 
 async def close_day(session, csrf):
