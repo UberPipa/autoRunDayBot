@@ -10,7 +10,6 @@ from bot.misc.states import firstUse
 
 async def first_blood(msg: Message, state: FSMContext) -> None:
     """ Функция для 1‑го запуска """
-    bot: Bot = msg.bot
     user_id = msg.from_user.id
     await msg.delete()
     if not await get_yes_or_no(user_id):
@@ -23,12 +22,12 @@ async def first_blood(msg: Message, state: FSMContext) -> None:
         await msg.answer(text='Выберите кнопку:', reply_markup=startEnd_reply_kbr)
 
 
-async def echo(msg: Message) -> None:
+async def echo(msg: Message, state: FSMContext) -> None:
     """ Эхо функция """
-    await msg.delete()
+    await first_blood(msg, state)
 
 
 def register_other_handlers(dp: Dispatcher) -> None:
     dp.register_message_handler(first_blood, commands=['start'], state="*")
     """ ЭХО ФУНКЦИЯ ВСЕГДА ДОЛЖНА БЫТЬ В САМОМ НИЗУ!!! """
-    dp.register_message_handler(echo, content_types=types.ContentType.ANY)
+    dp.register_message_handler(echo, content_types=types.ContentType.ANY, state="*")
