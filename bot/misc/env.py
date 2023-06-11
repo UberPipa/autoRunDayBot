@@ -1,6 +1,11 @@
-from os import environ
+import os
 from typing import Final
+from dotenv import load_dotenv
 
 
 class TgKeys:
-    TOKEN: Final = environ.get('TOKEN', "define me!")
+    load_dotenv()
+    TOKEN: Final = os.getenv('BOT_TOKEN')
+
+
+
