@@ -13,7 +13,7 @@ async def first_blood(msg: Message, state: FSMContext) -> None:
     user_id = msg.from_user.id
     await msg.delete()
     if not await get_yes_or_no(user_id):
-        await create_user(int(user_id))
+        await create_user(msg)
     # Проверяем на присутсвие логопаса
     if not await checkLogoPass(user_id):
         await state.set_state(firstUse.INPUT_LOGIN)
