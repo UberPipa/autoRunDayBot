@@ -1,5 +1,4 @@
-from bot.database.models.main import Users
-from peewee import Model, SqliteDatabase, CharField, IntegerField
+from bot.database.models.users import Users
 
 
 async def checkLogoPass(user_id) -> bool:

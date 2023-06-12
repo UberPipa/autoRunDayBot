@@ -1,6 +1,6 @@
 from datetime import datetime
 from typing import Union
-from bot.database.models.main import Users
+from bot.database.models.users import Users
 
 
 async def get_yes_or_no(user_id: int) -> Union[Users, None]:
@@ -16,8 +16,8 @@ async def create_user(msg) -> None:
             password=None,
             first_use=datetime.now().strftime("%Y-%m-%d %H:%M:%S"),
             last_use=datetime.now().strftime("%Y-%m-%d %H:%M:%S"),
-            first_name=msg.from_user if "first_name" in msg.from_user else None,
-            last_name=msg.from_user if "last_name" in msg.from_user else None,
-            username=msg.from_user if "username" in msg.from_user else None,
+            first_name=msg.from_user['first_name'] if "first_name" in msg.from_user else None,
+            last_name=msg.from_user['last_name'] if "last_name" in msg.from_user else None,
+            username=msg.from_user['username'] if "username" in msg.from_user else None,
 
         )

@@ -1,7 +1,7 @@
 from aiogram import Dispatcher, types
 from bot.startEndDay.actions.actions import reopen_day, close_day
 from bot.startEndDay.actions.statusWork import getting_start
-from bot.database.models.main import Users
+from bot.database.models.users import Users
 
 
 async def openReopen_day(msg: types.Message) -> None:

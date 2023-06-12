@@ -4,7 +4,7 @@ from aiogram import Dispatcher
 from bot.handlers.other import first_blood
 from bot.keyboards.reply import startEnd_reply_kbr
 from bot.misc.states import firstUse
-from bot.database.models.main import Users
+from bot.database.models.users import Users
 
 
 async def inputLogin(msg: Message, state: FSMContext) -> None:
