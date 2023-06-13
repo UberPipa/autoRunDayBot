@@ -15,6 +15,7 @@ async def __on_start_up(dp: Dispatcher) -> None:
 
 
 def start_bot():
-    bot = Bot(token=TgKeys.TOKEN, parse_mode='HTML')
+    print(TgKeys.TOKEN)
+    bot = Bot(token=TgKeys.TOKEN.strip("'"), parse_mode='HTML')
     dp = Dispatcher(bot, storage=MemoryStorage())
     executor.start_polling(dp, skip_updates=True, on_startup=__on_start_up)
