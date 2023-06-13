@@ -1,4 +1,6 @@
 from aiogram import Dispatcher, types
+
+from bot.database.methods.update import update_last_use
 from bot.startEndDay.actions.actions import reopen_day, close_day, open_day
 from bot.startEndDay.actions.statusWork import getting_start
 from bot.database.models.users import Users
@@ -14,6 +16,7 @@ async def openReopen_day(msg: types.Message) -> None:
     user = Users.get_by_id(msg.from_user.id)
     login = user.login
     password = user.password
+    update_last_use(msg)
     session, status, csrf = await getting_start(login, password)
     if status:
         if status['STATE'] == 'OPENED':
@@ -41,6 +44,7 @@ async def closed_day(msg: types.Message) -> None:
     user = Users.get_by_id(msg.from_user.id)
     login = user.login
     password = user.password
+    update_last_use(msg)
     session, status, csrf = await getting_start(login, password)
     if status:
         if status['STATE'] == 'CLOSED':
