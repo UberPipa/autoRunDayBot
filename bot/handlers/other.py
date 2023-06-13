@@ -1,7 +1,6 @@
 from aiogram.dispatcher import FSMContext
 from aiogram.types import Message
-from aiogram import Dispatcher, types, Bot
-
+from aiogram import Dispatcher, types
 from bot.database.methods.other import checkLogoPass
 from bot.keyboards.reply import startEnd_reply_kbr
 from bot.database.methods.create import create_user, get_yes_or_no

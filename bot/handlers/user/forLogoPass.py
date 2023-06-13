@@ -44,6 +44,6 @@ async def cancel(msg: Message, state: FSMContext) -> None:
 def user_inputLogPass_handlers(dp: Dispatcher) -> None:
     dp.register_message_handler(inputLogin, state=firstUse.INPUT_LOGIN)
     dp.register_message_handler(inputPassword, state=firstUse.INPUT_PASSWORD)
-    dp.register_message_handler(changeLogopass, commands=['chl', 'срд'], state="*")
+    dp.register_message_handler(changeLogopass, text=['Сменить логопас'], state="*")
     dp.register_message_handler(cancel, text='Отмена', state="*")
     pass
