@@ -1,13 +1,15 @@
 from aiogram import Dispatcher, types
-
+from aiogram.dispatcher import FSMContext
+from aiogram.dispatcher.filters import state
 from bot.database.methods.update import update_last_use
+from bot.misc.states import inputTime
 from bot.startEndDay.actions.actions import reopen_day, close_day, open_day
 from bot.startEndDay.actions.statusWork import getting_start
 from bot.database.models.users import Users
 import datetime
 
 
-async def openReopen_day(msg: types.Message) -> None:
+async def openReopen_day(msg: types.Message, state: FSMContext) -> None:
     """
 
         Переоткрывает рабочий день. Пока только это!!!!!!!!!
@@ -19,7 +21,10 @@ async def openReopen_day(msg: types.Message) -> None:
     update_last_use(msg)
     session, status, csrf = await getting_start(login, password)
     if status:
-        if status['STATE'] == 'OPENED':
+        if status['STATE'] == 'EXPIRED':
+            await state.set_state(inputTime.ENDAY)
+            await msg.answer(text='Не завершён рабочий день, введите час(пока так) окончания рабочего дня. Формат 24 часа, 6 часов - это 6 утра!!!')
+        elif status['STATE'] == 'OPENED':
             await msg.answer(text='Рабочи день уже идёт')
         else:
             # Проверяем когда был последний старт дня, если сегодня, то применяем reopen, если нет, то open
@@ -35,7 +40,7 @@ async def openReopen_day(msg: types.Message) -> None:
         await msg.answer(text='Неверно указан логин или пароль')
 
 
-async def closed_day(msg: types.Message) -> None:
+async def closed_day(msg: types.Message, state: FSMContext) -> None:
     """
 
         Закрывает рабочий день
@@ -47,7 +52,10 @@ async def closed_day(msg: types.Message) -> None:
     update_last_use(msg)
     session, status, csrf = await getting_start(login, password)
     if status:
-        if status['STATE'] == 'CLOSED':
+        if status['STATE'] == 'EXPIRED':
+            await state.set_state(inputTime.ENDAY)
+            await msg.answer(text='Не завершён рабочий день, введите час(пока так) окончания рабочего дня. Формат 24 часа, 6 часов - это 6 утра!!!')
+        elif status['STATE'] == 'CLOSED':
             await msg.answer(text='Рабочи день уже закрыт')
         else:
             await close_day(session, csrf)
@@ -56,7 +64,7 @@ async def closed_day(msg: types.Message) -> None:
         await msg.answer(text='Неверно указан логин или пароль.')
 
 
-async def get_status(msg: types.Message) -> None:
+async def get_status(msg: types.Message, state: FSMContext) -> None:
     """
 
         Получает текущий статус
@@ -67,6 +75,9 @@ async def get_status(msg: types.Message) -> None:
     password = user.password
     session, status, csrf = await getting_start(login, password)
     if status:
+        if status['STATE'] == 'EXPIRED':
+            await state.set_state(inputTime.ENDAY)
+            await msg.answer(text='Не завершён рабочий день, введите час(пока так) окончания рабочего дня. Формат 24 часа, 6 часов - это 6 утра!!!')
         status = status['STATE']
         await msg.answer(text=status)
     else:
@@ -74,7 +85,7 @@ async def get_status(msg: types.Message) -> None:
 
 
 def user_msg_handlers(dp: Dispatcher) -> None:
-    dp.register_message_handler(openReopen_day, text='Начать день')
-    dp.register_message_handler(closed_day, text="Завершить день")
-    dp.register_message_handler(get_status, text='Узнать статус')
+    dp.register_message_handler(openReopen_day, text='Начать день', state='*')
+    dp.register_message_handler(closed_day, text="Завершить день", state='*')
+    dp.register_message_handler(get_status, text='Узнать статус', state='*')
     pass
