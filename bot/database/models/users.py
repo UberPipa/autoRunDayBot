@@ -1,6 +1,12 @@
+import os
 from peewee import Model, SqliteDatabase, CharField, IntegerField
 
-db = SqliteDatabase('users.db')
+
+db_folder = 'data'
+if not os.path.exists(db_folder):
+    os.makedirs(db_folder)
+
+db = SqliteDatabase(os.path.join(db_folder, 'users.db'))
 
 
 class BaseModel(Model):
