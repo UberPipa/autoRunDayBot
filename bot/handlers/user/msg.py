@@ -1,6 +1,5 @@
 from aiogram import Dispatcher, types
 from aiogram.dispatcher import FSMContext
-from aiogram.dispatcher.filters import state
 from bot.database.methods.update import update_last_use
 from bot.misc.states import inputTime
 from bot.startEndDay.actions.actions import reopen_day, close_day, open_day
