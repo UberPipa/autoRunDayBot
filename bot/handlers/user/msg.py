@@ -11,7 +11,7 @@ import datetime
 async def openReopen_day(msg: types.Message, state: FSMContext) -> None:
     """
 
-        Переоткрывает рабочий день. Пока только это!!!!!!!!!
+        Переоткрывает рабочий день.
 
     """
     user = Users.get_by_id(msg.from_user.id)
