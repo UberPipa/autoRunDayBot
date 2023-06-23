@@ -5,13 +5,11 @@ from bot.startEndDay.actions.other import check_auth
 from bot.startEndDay.data import headers
 
 
-
-
 async def getting_start(login, password) -> Union[object, dict, bool]:
     """
 
          Функция логинит пользователя, получает csrf токен и получает статус.
-         После этой функции можно совершать дейтсвия с аккаунтом.
+         После этой функции можно совершать действия с аккаунтом.
 
     """
     session = requests.Session()
@@ -31,6 +29,11 @@ async def getting_start(login, password) -> Union[object, dict, bool]:
         }
     )
 
+    """ 
+    
+        Проверяем, верный ли логин и пароль, возвращает булевое значение.
+        
+    """
     result_auth = await check_auth(authorization)
     if result_auth:
         get_csrf = session.post(
@@ -59,8 +62,10 @@ async def getting_start(login, password) -> Union[object, dict, bool]:
         status = json.loads(status)
         return session, status, csrf
     else:
+
+        """ 
+
+            Если логопас не верен, возвращает False
+
+        """
         return False, False, False
-
-
-# session, status, csrf = getting_start(login, password)
-# print(status)

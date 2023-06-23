@@ -1,8 +1,14 @@
 import json
 from bot.startEndDay.data import headers
 
+"""
+    
+    Тут нахотятся простые функции действия, логика отсутствует.
 
-async def close_day(session, csrf):
+"""
+
+
+async def close_day(session, csrf) -> classmethod:
     """
 
         Функция закрывает рабочий день.
@@ -27,7 +33,7 @@ async def close_day(session, csrf):
     return status
 
 
-async def reopen_day(session, csrf):
+async def reopen_day(session, csrf) -> classmethod:
     """
 
         Функция переоткрывает рабочий день.
@@ -52,7 +58,7 @@ async def reopen_day(session, csrf):
     return status
 
 
-async def pause_day(session, csrf):
+async def pause_day(session, csrf) -> classmethod:
     """
 
         Функция ставит на паузу рабочий день.
@@ -77,7 +83,7 @@ async def pause_day(session, csrf):
     return status
 
 
-async def open_day(session, csrf):
+async def open_day(session, csrf) -> classmethod:
     """
 
         Функция открывает рабочий день.
@@ -102,7 +108,7 @@ async def open_day(session, csrf):
     return status
 
 
-async def forgot_day(session, csrf, close_time='0', report='ㅤ'):
+async def forgot_day(session, csrf, close_time='0', report='ㅤ') -> classmethod:
     """
 
         Функция закрывает предыдущий рабочий день.
@@ -126,14 +132,3 @@ async def forgot_day(session, csrf, close_time='0', report='ㅤ'):
     status = close_last_day.text.replace("'", "\"")
     status = json.loads(status)
     return status
-
-
-
-
-
-# session, status, csrf = getting_start(login, password)
-# reopen_day(session, csrf)
-
-
-
-

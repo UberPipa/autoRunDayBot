@@ -1,4 +1,3 @@
-import json
 from typing import Union
 
 
@@ -13,4 +12,3 @@ async def check_auth(authorization) -> Union[bool]:
         return True
     else:
         return False
-

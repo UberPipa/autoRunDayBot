@@ -1,4 +1,12 @@
-from bot.startEndDay.data import login, password
+""""""
+"""
+
+        Функции нужно переписывать под асинхронность!!!
+
+"""
+""""""
+
+
 from bot.startEndDay.actions.statusWork import getting_start
 
 
