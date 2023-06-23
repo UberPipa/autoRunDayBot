@@ -17,7 +17,7 @@ async def first_blood(msg: Message, state: FSMContext) -> None:
     # Проверяем на присутсвие логопаса
     if not await checkLogoPass(user_id):
         await state.set_state(firstUse.INPUT_LOGIN)
-        await msg.answer(text='Введите ниже ваш логин.')
+        await msg.answer(text='Введите ваш логин.')
     else:
         await msg.answer(text='ㅤ', reply_markup=inline_kbr_start)
 
