@@ -80,5 +80,5 @@ def change_end_day(session, csrf, close_time, report='ㅤ') -> None:
     print(status)
 
 
-session, status, csrf = getting_start(login, password)
-change_startEnd_day(session, csrf, '36000', '64800')
+# session, status, csrf = getting_start(login, password)
+# change_startEnd_day(session, csrf, '36000', '64800')

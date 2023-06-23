@@ -1,7 +1,10 @@
+import re
 from aiogram import types
 from aiogram.dispatcher import FSMContext
 from aiogram.types import Message, KeyboardButton, ReplyKeyboardMarkup
 from aiogram import Dispatcher
+
+from bot.handlers.logoPass.otherFunc import loginProcessing
 from bot.handlers.other import first_blood
 from bot.keyboards.reply import startEnd_reply_kbr
 from bot.misc.states import firstUse, inputTime
@@ -11,13 +14,28 @@ from bot.startEndDay.actions.statusWork import getting_start
 
 
 async def inputLogin(msg: Message, state: FSMContext) -> None:
-    """ Записывает в состоянии FSM логин """
-    user = Users.get_by_id(msg.from_user.id)
-    user.login = msg.text
-    user.save()
-    await state.finish()
-    await state.set_state(firstUse.INPUT_PASSWORD)
-    await msg.answer(text='Введите ваш пароль.')
+    """
+        Записывает в состоянии FSM логин
+    """
+    text = msg.text
+
+    if re.search(
+            '@stdpr\.ru',
+            text
+    ):
+
+        user = Users.get_by_id(msg.from_user.id)
+        user.login = msg.text
+        user.save()
+        await state.finish()
+        await state.set_state(firstUse.INPUT_PASSWORD)
+
+        await msg.answer(
+            text='Введите ваш пароль.'
+        )
+
+    else:
+        await loginProcessing(msg)
 
 
 async def inputPassword(msg: Message, state: FSMContext) -> None:

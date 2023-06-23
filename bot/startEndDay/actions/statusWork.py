@@ -29,11 +29,6 @@ async def getting_start(login, password) -> Union[object, dict, bool]:
         }
     )
 
-    """ 
-    
-        Проверяем, верный ли логин и пароль, возвращает булевое значение.
-        
-    """
     result_auth = await check_auth(authorization)
     if result_auth:
         get_csrf = session.post(
@@ -63,9 +58,4 @@ async def getting_start(login, password) -> Union[object, dict, bool]:
         return session, status, csrf
     else:
 
-        """ 
-
-            Если логопас не верен, возвращает False
-
-        """
         return False, False, False
