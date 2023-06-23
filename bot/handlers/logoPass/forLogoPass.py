@@ -44,15 +44,14 @@ async def inputPassword(msg: Message, state: FSMContext) -> None:
     user.password = msg.text
     user.save()
     await state.finish()
-    await msg.answer(text='Выберите кнопку:', reply_markup=startEnd_reply_kbr)
+    await first_blood(msg, state)
 
 
 async def changeLogopass(msg: Message, state: FSMContext) -> None:
     """ Команда для изменения логопаса """
     await state.set_state(firstUse.INPUT_LOGIN)
     await msg.answer(
-        text='Введите ваш логин.',
-        reply_markup=ReplyKeyboardMarkup().add(KeyboardButton(text="Отмена", resize_keyboard=True))
+        text='Сбросить логопас'
     )
 
 
