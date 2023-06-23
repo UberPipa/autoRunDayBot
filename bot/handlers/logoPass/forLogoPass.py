@@ -4,7 +4,7 @@ from aiogram.dispatcher import FSMContext
 from aiogram.types import Message, KeyboardButton, ReplyKeyboardMarkup
 from aiogram import Dispatcher
 
-from bot.handlers.logoPass.otherFunc import loginProcessing
+from bot.handlers.logoPass.otherFuncLogoPass import loginProcessing
 from bot.handlers.other import first_blood
 from bot.keyboards.reply import startEnd_reply_kbr
 from bot.misc.states import firstUse, inputTime

@@ -1,4 +1,6 @@
 import datetime
+import time
+
 from aiogram.dispatcher import FSMContext
 from aiogram.types import Message
 from aiogram import Dispatcher, types
@@ -7,6 +9,7 @@ from bot.database.methods.create import create_user, get_yes_or_no
 from bot.database.models.users import Users
 from bot.keyboards.inline import inline_kbr_start
 from bot.misc.states import firstUse
+from bot.misc.util import generationTextFirstBlood
 from bot.startEndDay.actions.statusWork import getting_start
 
 
@@ -21,11 +24,15 @@ async def first_blood(call: Message, state: FSMContext) -> None:
         await state.set_state(firstUse.INPUT_LOGIN)
         await call.answer(text='Введите ваш логин.')
     else:
+
+
+
         user = Users.get_by_id(call.from_user.id)
         login = user.login
         password = user.password
 
         session, status, csrf = await getting_start(login, password)
+
         state = status['STATE']
         dateStart = datetime.datetime.fromtimestamp(int(status['INFO']['DATE_START']))
         if status['INFO']['DATE_FINISH']:
@@ -33,15 +40,18 @@ async def first_blood(call: Message, state: FSMContext) -> None:
         else:
             dateFinish = 0
         duration = datetime.datetime.utcfromtimestamp(int(status['INFO']['DURATION']))
-        duration = duration.strftime('%H:%M:%S')
+        strDuration = duration.strftime('%H:%M:%S')
 
+        # 9 часов - 32400; 8 - 28800
+        recommendedEnd = datetime.datetime.fromtimestamp(int((32400 - int(status['INFO']['DURATION'])) + int(time.time())))
+        recommendedEndStr = recommendedEnd.strftime('%H:%M:%S')
+        # recommendedEnd = recommendedEnd.strftime('%H:%M:%S')
+
+
+        answerText = await generationTextFirstBlood(status)
 
         await call.answer(
-            text=f'Текущий статус - {state}\n'
-                 f'Дата начала дня - {dateStart}\n'
-                 f'Дата окончания дня - {dateFinish}\n'
-                 f'Уже работаешь - {duration}\n'
-                 f'{status}',
+            text=answerText,
             reply_markup=inline_kbr_start
         )
 
