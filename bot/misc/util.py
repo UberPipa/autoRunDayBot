@@ -21,16 +21,38 @@ async def generationTextFirstBlood(status) -> str:
     text = state
 
     if status['INFO']['DATE_START']:
+        """ 
+            Показывает время начала рабочего дня 
+        """
         timeStart = datetime.datetime.fromtimestamp(int(status['INFO']['DATE_START']))
         timeStart = timeStart.strftime('%H:%M:%S')
         timeStart = f'День начат: <code>{timeStart}</code>.\n'
         text += timeStart
 
+
     if status['INFO']['DATE_FINISH'] and status['STATE'] == 'CLOSED':
+        """ 
+            Показывает время завершения 
+        """
         timeEnd = datetime.datetime.fromtimestamp(int(status['INFO']['DATE_FINISH']))
         timeEnd = timeEnd.strftime('%H:%M:%S')
         timeEnd = f'Время завершения: <code>{timeEnd}</code>.\n'
         text += timeEnd
+
+
+    if status['INFO']['DATE_START'] and status['STATE'] == 'OPENED':
+        """ 
+            Показывает время работы 
+        """
+        timeStart = status['INFO']['DATE_START']
+        # Текущее Unix время
+        currentUnixTime = time.time()
+        durationWork = int(currentUnixTime) - int(timeStart)
+        durationWork = datetime.datetime.utcfromtimestamp(durationWork)
+        durationWork = durationWork.strftime('%H:%M:%S')
+        workTime = f'Вы уже работаете: <code>{durationWork}</code>.\n'
+        text += workTime
+
 
     # state = status['STATE']
     # dateStart = datetime.datetime.fromtimestamp(int(status['INFO']['DATE_START']))
