@@ -23,7 +23,7 @@ async def generationTextFirstBlood(status) -> str:
     if status['INFO']['DATE_START']:
         timeStart = datetime.datetime.fromtimestamp(int(status['INFO']['DATE_START']))
         timeStart = timeStart.strftime('%H:%M:%S')
-        timeStart = f'Время начала: <code>{timeStart}</code>.\n'
+        timeStart = f'День начат: <code>{timeStart}</code>.\n'
         text += timeStart
 
     if status['INFO']['DATE_FINISH'] and status['STATE'] == 'CLOSED':

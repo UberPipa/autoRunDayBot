@@ -30,7 +30,9 @@ async def getting_start(login, password) -> Union[object, dict, bool]:
     )
 
     result_auth = await check_auth(authorization)
+
     if result_auth:
+
         get_csrf = session.post(
             'https://bitrix.stdpr.ru/bitrix/services/main/ajax.php',
             headers=headers,
@@ -55,6 +57,14 @@ async def getting_start(login, password) -> Union[object, dict, bool]:
         )
         status = get_status.text.replace("'", "\"")
         status = json.loads(status)
+
+        print(authorization.request)
+        print(authorization.headers)
+        print(authorization.raw)
+        print(authorization.text)
+
+
+
         return session, status, csrf
     else:
 
