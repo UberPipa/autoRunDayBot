@@ -58,14 +58,8 @@ async def getting_start(login, password) -> Union[object, dict, bool]:
         status = get_status.text.replace("'", "\"")
         status = json.loads(status)
 
-        print(authorization.request)
-        print(authorization.headers)
-        print(authorization.raw)
-        print(authorization.text)
-
-
-
         return session, status, csrf
+
     else:
 
         return False, False, False
