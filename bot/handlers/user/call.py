@@ -1,7 +1,8 @@
-from aiogram import Dispatcher, types
+from aiogram import Dispatcher, types, Bot
 from aiogram.dispatcher import FSMContext
 from bot.database.methods.update import update_last_use
 from bot.misc.states import inputTime
+from bot.handlers.other import first_blood
 from bot.startEndDay.actions.actions import reopen_day, close_day, open_day, pause_day
 from bot.startEndDay.actions.statusWork import getting_start
 from bot.database.models.users import Users
@@ -111,21 +112,26 @@ async def get_status(call: types.CallbackQuery, state: FSMContext) -> None:
         Получает текущий статус
 
     """
+    bot: Bot = call.bot
     user = Users.get_by_id(call.from_user.id)
     login = user.login
     password = user.password
+
     session, status, csrf = await getting_start(login, password)
+
     if status:
+
         if status['STATE'] == 'EXPIRED':
+
             await state.set_state(inputTime.ENDAY)
             await call.answer(text='Не завершён рабочий день, введите час(пока так) окончания рабочего дня. Формат 24 часа, 6 часов - это 6 утра!!!')
             status = status['STATE']
             await call.answer(text=status)
+
         else:
-            await call.answer(
-                'Сорри, файлик потерялся',
-                show_alert=True
-            )
+
+            await first_blood(call, state)
+
     else:
         await call.answer(text='Неверно указан логин или пароль')
 

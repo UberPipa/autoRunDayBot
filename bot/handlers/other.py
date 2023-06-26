@@ -17,36 +17,23 @@ async def first_blood(call: Message, state: FSMContext) -> None:
     """ Функция для 1‑го запуска """
     user_id = call.from_user.id
     await call.delete()
+
     if not await get_yes_or_no(user_id):
+
         await create_user(call)
     # Проверяем на присутсвие логопаса
     if not await checkLogoPass(user_id):
+
         await state.set_state(firstUse.INPUT_LOGIN)
         await call.answer(text='Введите ваш логин.')
+
     else:
-
-
 
         user = Users.get_by_id(call.from_user.id)
         login = user.login
         password = user.password
 
         session, status, csrf = await getting_start(login, password)
-
-        state = status['STATE']
-        dateStart = datetime.datetime.fromtimestamp(int(status['INFO']['DATE_START']))
-        if status['INFO']['DATE_FINISH']:
-            dateFinish = datetime.datetime.fromtimestamp(int(status['INFO']['DATE_FINISH']))
-        else:
-            dateFinish = 0
-        duration = datetime.datetime.utcfromtimestamp(int(status['INFO']['DURATION']))
-        strDuration = duration.strftime('%H:%M:%S')
-
-        # 9 часов - 32400; 8 - 28800
-        recommendedEnd = datetime.datetime.fromtimestamp(int((32400 - int(status['INFO']['DURATION'])) + int(time.time())))
-        recommendedEndStr = recommendedEnd.strftime('%H:%M:%S')
-        # recommendedEnd = recommendedEnd.strftime('%H:%M:%S')
-
 
         answerText = await generationTextFirstBlood(status)
 
