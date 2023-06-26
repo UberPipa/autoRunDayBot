@@ -29,6 +29,7 @@ async def first_blood(call: Message, state: FSMContext) -> None:
 
     else:
 
+        # Получаем данные конкретного юзера
         user = Users.get_by_id(call.from_user.id)
         login = user.login
         password = user.password

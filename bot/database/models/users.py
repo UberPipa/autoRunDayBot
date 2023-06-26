@@ -24,6 +24,11 @@ class Users(BaseModel):
     username = CharField(max_length=50, null=True)
 
 
+class LastMsg(BaseModel):
+    user_id = IntegerField(unique=True, primary_key=True)
+    msg_id = CharField(max_length=50, null=True)
+
+
 def register_models() -> None:
     for model in BaseModel.__subclasses__():
         model.create_table()

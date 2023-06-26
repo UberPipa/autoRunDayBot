@@ -21,3 +21,14 @@ async def create_user(call) -> None:
             username=call.from_user['username'] if "username" in call.from_user else None,
 
         )
+
+
+async def last_msg(call) -> None:
+    user_id = call.from_user.id
+    msg_id = call.message_id
+    if not await get_yes_or_no(user_id):
+        Users.create(
+            user_id=user_id,
+            msg_id=msg_id,
+
+        )
