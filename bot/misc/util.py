@@ -40,7 +40,7 @@ async def generationTextFirstBlood(status) -> str:
         text += timeEnd
 
 
-    if status['INFO']['DATE_START'] and status['STATE'] == 'OPENED':
+    if status['STATE'] == 'OPENED' or status['STATE'] == 'PAUSED':
         """ 
             Показывает время работы 
         """
@@ -50,8 +50,33 @@ async def generationTextFirstBlood(status) -> str:
         durationWork = int(currentUnixTime) - int(timeStart)
         durationWork = datetime.datetime.utcfromtimestamp(durationWork)
         durationWork = durationWork.strftime('%H:%M:%S')
-        workTime = f'Вы уже работаете: <code>{durationWork}</code>.\n'
-        text += workTime
+        durationWork = f'Вы уже работаете: <code>{durationWork}</code>.\n'
+        text += durationWork
+
+
+    if status['STATE'] == 'OPENED' or status['STATE'] == 'PAUSED':
+        """ 
+            Показывает рекомендуемое время завершения
+        """
+        timeStart = int(status['INFO']['DATE_START'])
+        nineHours = 32400
+        reccomendedTimeEndWork = datetime.datetime.fromtimestamp(timeStart + nineHours)
+        reccomendedTimeEndWork = reccomendedTimeEndWork.strftime('%H:%M:%S')
+        reccomendedTimeEndWork = f'Рекомендуем завершить в: <code>{reccomendedTimeEndWork}</code>.\n'
+        text += reccomendedTimeEndWork
+
+
+    if status['INFO']['DATE_FINISH'] and status['STATE'] == 'CLOSED' and status['INFO']['DATE_START']:
+        """ 
+            Показывает сколько всего проработал 
+        """
+        timeStart = int(status['INFO']['DATE_START'])
+        timeEnd = int(status['INFO']['DATE_FINISH'])
+        timeWork = timeEnd - timeStart
+        timeWork = datetime.datetime.utcfromtimestamp(timeWork)
+        timeWork = timeWork.strftime('%H:%M:%S')
+        timeWork = f'Вы поработали: <code>{timeWork}</code>.\n'
+        text += timeWork
 
 
     # state = status['STATE']
