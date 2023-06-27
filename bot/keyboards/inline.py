@@ -9,3 +9,8 @@ inline_kbr_start.add(InlineKeyboardButton(text='Обновить статус'.u
 inline_kbr_start.add(InlineKeyboardButton(text='Настройки'.upper(), callback_data="settingDay"))
 inline_kbr_start.add(InlineKeyboardButton(text='Дополнительно'.upper(), callback_data="extraFeature"))
 inline_kbr_start.add(InlineKeyboardButton(text='Справка'.upper(), callback_data="reference"))
+
+
+kbr_incorrect_logopass = InlineKeyboardMarkup()
+""" Клавиатура для смены логопаса """
+kbr_incorrect_logopass.add(InlineKeyboardButton(text='Сменить логопас'.upper(), callback_data="changeLogopass"))

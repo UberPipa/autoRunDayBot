@@ -1,6 +1,7 @@
 from aiogram import Dispatcher, types, Bot
 from aiogram.dispatcher import FSMContext
 from bot.database.methods.update import update_last_use
+from bot.keyboards.inline import kbr_incorrect_logopass
 from bot.misc.states import inputTime
 from bot.handlers.other import first_blood
 from bot.misc.util import checkCurrentDay
@@ -19,7 +20,7 @@ async def openReopen_day(call: types.CallbackQuery, state: FSMContext) -> None:
     user = Users.get_by_id(call.from_user.id)
     login = user.login
     password = user.password
-    update_last_use(call)
+    await update_last_use(call)
     """ Стартуем сессию """
     session, status, csrf = await getting_start(login, password)
     if status:
@@ -36,7 +37,9 @@ async def openReopen_day(call: types.CallbackQuery, state: FSMContext) -> None:
                 await open_day(session, csrf)
             await call.answer(text='Рабочий день начат')
     else:
-        await call.answer(text='Неверно указан логин или пароль')
+        await call.answer(
+            text='Неверно указан логин или пароль',
+        )
 
 
 async def closed_day(call: types.CallbackQuery, state: FSMContext) -> None:
@@ -48,7 +51,7 @@ async def closed_day(call: types.CallbackQuery, state: FSMContext) -> None:
     user = Users.get_by_id(call.from_user.id)
     login = user.login
     password = user.password
-    update_last_use(call)
+    await update_last_use(call)
     session, status, csrf = await getting_start(login, password)
     if status:
         if status['STATE'] == 'EXPIRED':
@@ -60,7 +63,9 @@ async def closed_day(call: types.CallbackQuery, state: FSMContext) -> None:
             await close_day(session, csrf)
             await call.answer(text='Рабочий день закрыт')
     else:
-        await call.answer(text='Неверно указан логин или пароль.')
+        await call.answer(
+            text='Неверно указан логин или пароль.',
+        )
 
 
 async def coffeBreak_day(call: types.CallbackQuery, state: FSMContext) -> None:
@@ -72,7 +77,7 @@ async def coffeBreak_day(call: types.CallbackQuery, state: FSMContext) -> None:
     user = Users.get_by_id(call.from_user.id)
     login = user.login
     password = user.password
-    update_last_use(call)
+    await update_last_use(call)
     session, status, csrf = await getting_start(login, password)
     if status:
         if status['STATE'] == 'EXPIRED':

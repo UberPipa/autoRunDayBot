@@ -1,6 +1,6 @@
 from datetime import datetime
 from typing import Union
-from bot.database.models.users import Users
+from bot.database.models.users import Users, LastMsg
 
 
 async def get_yes_or_no(user_id: int) -> Union[Users, None]:
@@ -23,12 +23,11 @@ async def create_user(call) -> None:
         )
 
 
-async def last_msg(call) -> None:
+async def create_last_msg(call) -> None:
     user_id = call.from_user.id
     msg_id = call.message_id
     if not await get_yes_or_no(user_id):
-        Users.create(
+        LastMsg.create(
             user_id=user_id,
-            msg_id=msg_id,
-
+            msg_id=msg_id
         )
