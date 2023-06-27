@@ -41,7 +41,6 @@ async def first_blood(call: Message, state: FSMContext) -> None:
             text=answerText,
             reply_markup=inline_kbr_start
         )
-        print(status)
 
 
 async def echo(msg: Message, state: FSMContext) -> None:
