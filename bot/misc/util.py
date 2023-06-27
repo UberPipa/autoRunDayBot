@@ -7,11 +7,14 @@ from aiogram.utils.exceptions import MessageToEditNotFound, MessageToDeleteNotFo
 
 
 async def generationTextFirstBlood(status) -> str:
+
     """
 
         Функция генерирует текст для шапки функции FirstBlood
 
     """
+
+
     nowTime = datetime.datetime.now()
     nowTime = nowTime.strftime('%Y-%m-%d %H:%M:%S')
     text = f'По состоянию на: <code>{nowTime}</code>.\n'
@@ -29,30 +32,52 @@ async def generationTextFirstBlood(status) -> str:
     state = f'Текущий статус: {state}\n'
     text += state
 
+
     if status['INFO']['DATE_START']:
+
         """ 
-            Показывает время начала рабочего дня 
+        
+            Проверяем когда был последний старт дня 
+            
         """
-        timeStart = datetime.datetime.fromtimestamp(int(status['INFO']['DATE_START']))
-        timeStart = timeStart.strftime('%H:%M:%S')
-        timeStart = f'День начат: <code>{timeStart}</code>.\n'
-        text += timeStart
+
+
+        if checkCurrentDay(status):
+
+            timeStart = datetime.datetime.fromtimestamp(int(status['INFO']['DATE_START']))
+            timeStart = timeStart.strftime('%H:%M:%S')
+            timeStart = f'День начат: <code>{timeStart}</code>.\n'
+            text += timeStart
+
+        else:
+            timeStart = f'Сегодня рабочий день ещё не был начат.\n'
+            text += timeStart
 
 
     if status['INFO']['DATE_FINISH'] and status['STATE'] == 'CLOSED':
+
         """ 
+
             Показывает время завершения 
+
         """
-        timeEnd = datetime.datetime.fromtimestamp(int(status['INFO']['DATE_FINISH']))
-        timeEnd = timeEnd.strftime('%H:%M:%S')
-        timeEnd = f'Время завершения: <code>{timeEnd}</code>.\n'
-        text += timeEnd
+
+        if checkCurrentDay(status):
+
+            timeEnd = datetime.datetime.fromtimestamp(int(status['INFO']['DATE_FINISH']))
+            timeEnd = timeEnd.strftime('%H:%M:%S')
+            timeEnd = f'Время завершения: <code>{timeEnd}</code>.\n'
+            text += timeEnd
 
 
     if status['STATE'] == 'OPENED' or status['STATE'] == 'PAUSED':
+
         """ 
+        
             Показывает время работы 
+            
         """
+
         timeStart = status['INFO']['DATE_START']
         # Текущее Unix время
         currentUnixTime = time.time()
@@ -64,9 +89,13 @@ async def generationTextFirstBlood(status) -> str:
 
 
     if status['STATE'] == 'OPENED' or status['STATE'] == 'PAUSED':
+
         """ 
+        
             Показывает рекомендуемое время завершения
+            
         """
+
         timeStart = int(status['INFO']['DATE_START'])
         nineHours = 32400
         reccomendedTimeEndWork = datetime.datetime.fromtimestamp(timeStart + nineHours)
@@ -76,22 +105,42 @@ async def generationTextFirstBlood(status) -> str:
 
 
     if status['INFO']['DATE_FINISH'] and status['STATE'] == 'CLOSED' and status['INFO']['DATE_START']:
+
         """ 
+        
             Показывает сколько всего проработал 
+            
         """
-        timeStart = int(status['INFO']['DATE_START'])
-        timeEnd = int(status['INFO']['DATE_FINISH'])
-        timeWork = timeEnd - timeStart
-        timeWork = datetime.datetime.utcfromtimestamp(timeWork)
-        timeWork = timeWork.strftime('%H:%M:%S')
-        timeWork = f'Вы поработали: <code>{timeWork}</code>.\n'
-        text += timeWork
 
+        if checkCurrentDay(status):
+            timeStart = int(status['INFO']['DATE_START'])
+            timeEnd = int(status['INFO']['DATE_FINISH'])
+            timeWork = timeEnd - timeStart
+            timeWork = datetime.datetime.utcfromtimestamp(timeWork)
+            timeWork = timeWork.strftime('%H:%M:%S')
+            timeWork = f'Вы поработали: <code>{timeWork}</code>.\n'
+            text += timeWork
 
+        print(status)
     return text
 
 
-async def delete_inline_and_msg(msg):
+def checkCurrentDay(status) -> bool:
+    """
+
+        Проверяет когда был последний старт дня, если сегодня, то вернёт True, если нет, то False
+
+    """
+    last_date_start = datetime.datetime.fromtimestamp(int(status['INFO']['DATE_START']))
+    last_date_start = last_date_start.date()
+    today = datetime.date.today()
+    if last_date_start == today:
+        return True
+    else:
+        return False
+
+
+async def delete_inline_and_msg(msg) -> None:
     """
 
         Удаление инлай клавиатуры и предыдущего сообщения
@@ -130,41 +179,3 @@ async def delete_inline_and_msg(msg):
     except MessageNotModified:
         # print("Сообщение для удаления не найдено")
         pass
-
-
-# async def generationTextStatus(status) -> str:
-#     """
-#
-#         Функция генерирует текст статуса
-#
-#     """
-#     state = status['STATE']
-#     if state == 'OPENED':
-#         state = 'Рабочий день <b>открыт</b> - 🟢.'
-#     elif state == 'PAUSED':
-#         state = 'Рабочий день <b>приостановлен</b> - ⏸️.'
-#     elif state == 'CLOSED':
-#         state = 'Рабочий день <b>закрыт</b> - 🛑.'
-#     state = f'{state}\n'
-#     text = state
-#
-#
-#     if status['INFO']['DATE_START']:
-#         """
-#             Показывает дату и время начала рабочего дня
-#         """
-#         timeStart = datetime.datetime.fromtimestamp(int(status['INFO']['DATE_START']))
-#         timeStart = f'День начат: <code>{timeStart}</code>.\n'
-#         text += timeStart
-#
-#     if status['STATE'] == 'OPENED' or status['STATE'] == 'PAUSED':
-#         """
-#             Показывает рекомендуемое время завершения
-#         """
-#         timeStart = int(status['INFO']['DATE_START'])
-#         nineHours = 32400
-#         reccomendedTimeEndWork = datetime.datetime.fromtimestamp(timeStart + nineHours)
-#         reccomendedTimeEndWork = f'Рекомендуемое время завершения+: <code>{reccomendedTimeEndWork}</code>.\n'
-#         text += reccomendedTimeEndWork
-#
-#     return text

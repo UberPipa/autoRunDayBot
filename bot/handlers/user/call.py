@@ -3,6 +3,7 @@ from aiogram.dispatcher import FSMContext
 from bot.database.methods.update import update_last_use
 from bot.misc.states import inputTime
 from bot.handlers.other import first_blood
+from bot.misc.util import checkCurrentDay
 from bot.startEndDay.actions.actions import reopen_day, close_day, open_day, pause_day
 from bot.startEndDay.actions.statusWork import getting_start
 from bot.database.models.users import Users
@@ -28,11 +29,8 @@ async def openReopen_day(call: types.CallbackQuery, state: FSMContext) -> None:
         elif status['STATE'] == 'OPENED':
             await call.answer(text='Рабочи день уже идёт')
         else:
-            """ Проверяем когда был последний старт дня, если сегодня, то применяем reopen, если нет, то open """
-            last_date_start = datetime.datetime.fromtimestamp(int(status['INFO']['DATE_START']))
-            last_date_start = last_date_start.date()
-            today = datetime.date.today()
-            if last_date_start == today:
+            """ Проверяет когда был последний старт дня, если сегодня, то вернёт True, если нет, то False  """
+            if checkCurrentDay(status):
                 await reopen_day(session, csrf)
             else:
                 await open_day(session, csrf)
