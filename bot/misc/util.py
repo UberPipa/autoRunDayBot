@@ -121,7 +121,7 @@ async def generationTextFirstBlood(status) -> str:
             timeWork = f'Вы поработали: <code>{timeWork}</code>.\n'
             text += timeWork
 
-        print(status)
+
     return text
 
 

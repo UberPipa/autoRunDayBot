@@ -45,3 +45,41 @@ headers = {
 #     'REPORT': '',
 #     'REPORT_TS': '1687761868'
 # }
+
+""" Пример открытого дня на 27.06.2023 """
+# {
+#     'ID': '53559',
+#     'STATE': 'OPENED',
+#     'CAN_EDIT': 'Y',  !!!
+#     'REPORT_REQ': 'A',
+#     'TM_FREE': False,
+#     'INFO': {
+#         'DATE_START': '1687852065', # Tue, 27 Jun 2023 07:47:45 GMT
+#         'DATE_FINISH': '',
+#         'TIME_START': '38865', # 10 hours, 47 min 45 sec.
+#         'TIME_FINISH': '',
+#         'DURATION': '405',
+#         'TIME_LEAKS': '0',
+#         'ACTIVE': True,
+#         'PAUSED': False,
+#         'CURRENT_STATUS': 'OPENED',
+#         'RECOMMENDED_CLOSE_TIMESTAMP': '1687878000'
+#     },
+#     'SOCSERV_ENABLED': True,
+#     'SOCSERV_ENABLED_USER': False,
+#     'PLANNER': {
+#         'TASKS_ENABLED': True,
+#         'TASKS': [],
+#         'TASKS_COUNT': '0',
+#         'TASKS_TIMER': False,
+#         'TASK_ON_TIMER': False,
+#         'MANDATORY_UFS': 'N',
+#         'TASK_ADD_URL': '/company/personal/user/1969/tasks/task/edit/0/?ADD_TO_TIMEMAN=Y',
+#         'CALENDAR_ENABLED': True,
+#         'EVENTS': [],
+#         'EVENT_TIME': ''
+#     },
+#     'FULL': True,
+#     'REPORT': '',
+#     'REPORT_TS': '1687852065'
+# }
