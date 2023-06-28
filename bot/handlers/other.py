@@ -3,7 +3,7 @@ from aiogram.types import Message
 from aiogram import Dispatcher, types
 from bot.database.methods.other import checkLogoPass
 from bot.database.methods.create import create_user, get_yes_or_no, create_last_msg
-from bot.database.methods.update import save_last_msg
+from bot.database.methods.update import update_last_msg
 from bot.database.models.users import Users
 from bot.handlers.logoPass.otherFuncForLogopass import firstStartInputLogopass
 from bot.keyboards.inline import inline_kbr_start, kbr_incorrect_logopass
@@ -20,8 +20,8 @@ async def first_blood(call: Message, state: FSMContext) -> None:
     user_id = call.from_user.id
     await call.delete()
     # Пытаемся получить id юзера
-    if not await get_yes_or_no(user_id):
-        """ Создаются Записи, если отсутсвуют """
+    if not await get_yes_or_no(user_id, Users):
+        """ Создаются таблицы, если отсутсвуют """
         await create_user(call)
         await create_last_msg(call)
 
@@ -42,11 +42,11 @@ async def first_blood(call: Message, state: FSMContext) -> None:
             # Если логопас верен генерируем текст
             answerText = await generationTextFirstBlood(status)
 
+            await update_last_msg(call)
             await call.answer(
                 text=answerText,
                 reply_markup=inline_kbr_start
             )
-            await save_last_msg(call)
 
         else:
             # Если логопас не верен

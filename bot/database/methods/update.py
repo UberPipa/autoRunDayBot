@@ -17,7 +17,7 @@ async def update_last_use(call) -> None:
     user.save()
 
 
-async def save_last_msg(call) -> None:
+async def update_last_msg(call) -> None:
 
     """
         Фиксирует id последнего сообщения

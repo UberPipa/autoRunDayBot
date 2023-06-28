@@ -53,7 +53,9 @@ async def closed_day(call: types.CallbackQuery, state: FSMContext) -> None:
     user = Users.get_by_id(call.from_user.id)
     login = user.login
     password = user.password
+
     await update_last_use(call)
+
     session, status, csrf = await getting_start(login, password)
     if status:
         if status['STATE'] == 'EXPIRED':
@@ -79,7 +81,9 @@ async def coffeBreak_day(call: types.CallbackQuery, state: FSMContext) -> None:
     user = Users.get_by_id(call.from_user.id)
     login = user.login
     password = user.password
+
     await update_last_use(call)
+
     session, status, csrf = await getting_start(login, password)
     if status:
         if status['STATE'] == 'EXPIRED':
@@ -121,6 +125,8 @@ async def get_status(call: types.CallbackQuery, state: FSMContext) -> None:
     user = Users.get_by_id(call.from_user.id)
     login = user.login
     password = user.password
+
+    await update_last_use(call)
 
     session, status, csrf = await getting_start(login, password)
 

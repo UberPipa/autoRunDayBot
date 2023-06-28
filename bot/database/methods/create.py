@@ -3,8 +3,15 @@ from typing import Union
 from bot.database.models.users import Users, LastMsg
 
 
-async def get_yes_or_no(user_id: int) -> Union[Users, None]:
-    return Users.get_or_none(Users.user_id == user_id)
+async def get_yes_or_no(user_id: int, db) -> Union[Users, None]:
+
+    """
+    Ищет юзера в базе, возвращент его id или None
+    :param user_id:
+    :return: Users, None
+    """
+
+    return db.get_or_none(db.user_id == user_id)
 
 
 async def create_user(call) -> None:
@@ -16,7 +23,7 @@ async def create_user(call) -> None:
     """
 
     user_id = call.from_user.id
-    if not await get_yes_or_no(user_id):
+    if not await get_yes_or_no(user_id, Users):
         Users.create(
             user_id=user_id,
             login=None,
@@ -40,7 +47,7 @@ async def create_last_msg(call) -> None:
 
     user_id = call.from_user.id
     msg_id = call.message_id
-    if not await get_yes_or_no(user_id):
+    if not await get_yes_or_no(user_id, LastMsg):
         LastMsg.create(
             user_id=user_id,
             msg_id=msg_id,
