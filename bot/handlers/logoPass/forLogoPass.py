@@ -25,7 +25,7 @@ async def inputLogin(msg: Message, state: FSMContext) -> None:
     await state.set_state(firstUse.INPUT_PASSWORD)
 
     await msg.answer(
-        text='Отлично, введите ваш пароль.'
+        text='Отлично, теперь пароль.'
     )
 
 
@@ -46,7 +46,7 @@ async def inputPassword(msg: Message, state: FSMContext) -> None:
 
 
 async def changeLogopass(call: Message, state: FSMContext) -> None:
-    """ Команда для изменения логопаса """
+    """ Ловит колбек и удаляет логопасс из БД """
     await call.answer(text='Введите ваш логин без "<code>@stdpr.ru</code>"')
 
 

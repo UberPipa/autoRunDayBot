@@ -48,6 +48,7 @@ async def first_blood(call: Message, state: FSMContext) -> None:
             await save_last_msg(call)
 
         else:
+            # Если логопас не верен
             await call.answer(
                 text='Неверно указан логин или пароль.',
                 reply_markup=kbr_incorrect_logopass,
