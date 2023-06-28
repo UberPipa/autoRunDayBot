@@ -12,15 +12,17 @@ import datetime
 
 
 async def openReopen_day(call: types.CallbackQuery, state: FSMContext) -> None:
-    """
 
+    """
         Переоткрывает рабочий день.
-
     """
+
     user = Users.get_by_id(call.from_user.id)
     login = user.login
     password = user.password
+
     await update_last_use(call)
+
     """ Стартуем сессию """
     session, status, csrf = await getting_start(login, password)
     if status:
@@ -43,11 +45,11 @@ async def openReopen_day(call: types.CallbackQuery, state: FSMContext) -> None:
 
 
 async def closed_day(call: types.CallbackQuery, state: FSMContext) -> None:
-    """
 
+    """
         Закрывает рабочий день
-
     """
+
     user = Users.get_by_id(call.from_user.id)
     login = user.login
     password = user.password
@@ -69,11 +71,11 @@ async def closed_day(call: types.CallbackQuery, state: FSMContext) -> None:
 
 
 async def coffeBreak_day(call: types.CallbackQuery, state: FSMContext) -> None:
-    """
 
+    """
         Ставит на паузу рабочий день.
-
     """
+
     user = Users.get_by_id(call.from_user.id)
     login = user.login
     password = user.password
@@ -110,11 +112,11 @@ async def coffeBreak_day(call: types.CallbackQuery, state: FSMContext) -> None:
 
 
 async def get_status(call: types.CallbackQuery, state: FSMContext) -> None:
-    """
 
+    """
         Получает текущий статус
-
     """
+
     bot: Bot = call.bot
     user = Users.get_by_id(call.from_user.id)
     login = user.login

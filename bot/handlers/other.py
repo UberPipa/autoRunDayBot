@@ -1,22 +1,24 @@
 from aiogram.dispatcher import FSMContext
 from aiogram.types import Message
-from aiogram import Dispatcher, types, Bot
+from aiogram import Dispatcher, types
 from bot.database.methods.other import checkLogoPass
 from bot.database.methods.create import create_user, get_yes_or_no, create_last_msg
 from bot.database.methods.update import save_last_msg
 from bot.database.models.users import Users
+from bot.handlers.logoPass.otherFuncForLogopass import firstStartInputLogopass
 from bot.keyboards.inline import inline_kbr_start, kbr_incorrect_logopass
-from bot.misc.states import firstUse
 from bot.misc.util import generationTextFirstBlood
 from bot.startEndDay.actions.statusWork import getting_start
 
 
 async def first_blood(call: Message, state: FSMContext) -> None:
-    """ Функция для 1‑го запуска """
+
+    """
+        Функция для 1‑го запуска
+    """
+
     user_id = call.from_user.id
-
     await call.delete()
-
     # Пытаемся получить id юзера
     if not await get_yes_or_no(user_id):
         """ Создаются Записи, если отсутсвуют """
@@ -25,9 +27,8 @@ async def first_blood(call: Message, state: FSMContext) -> None:
 
     # Проверяем на присутсвие логопаса
     if not await checkLogoPass(user_id):
-
-        await state.set_state(firstUse.INPUT_LOGIN)
-        await call.answer(text='Привет, введите ваш логин без "<code>@stdpr.ru</code>"')
+        # Eсли логопаса нет, запускаем функцию для ввода
+        await firstStartInputLogopass(call, state)
 
     else:
         # Если всё ок и есть логопас, то получаем данные конкретного юзера
@@ -53,11 +54,14 @@ async def first_blood(call: Message, state: FSMContext) -> None:
                 text='Неверно указан логин или пароль.',
                 reply_markup=kbr_incorrect_logopass,
             )
-            await state.set_state(firstUse.INPUT_LOGIN)
 
 
 async def echo(msg: Message, state: FSMContext) -> None:
-    """ Эхо функция """
+
+    """
+        Эхо функция
+    """
+
     print('Я в эхо')
     await first_blood(msg, state)
 

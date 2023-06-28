@@ -2,6 +2,7 @@ from aiogram import types
 from aiogram.dispatcher import FSMContext
 from aiogram.types import Message
 from aiogram import Dispatcher
+from bot.handlers.logoPass.otherFuncForLogopass import startInputLogopass
 from bot.handlers.other import first_blood
 from bot.misc.states import firstUse, inputTime
 from bot.database.models.users import Users
@@ -46,8 +47,13 @@ async def inputPassword(msg: Message, state: FSMContext) -> None:
 
 
 async def changeLogopass(call: Message, state: FSMContext) -> None:
-    """ Ловит колбек и удаляет логопасс из БД """
-    await call.answer(text='Введите ваш логин без "<code>@stdpr.ru</code>"')
+
+    """
+        Хендлер для изминения логопаса
+    """
+
+    await startInputLogopass(call, state)
+
 
 
 async def cancel(msg: Message, state: FSMContext) -> None:
@@ -75,7 +81,7 @@ async def endEXPIREDday(msg: Message, state: FSMContext) -> None:
 def user_all_handlers(dp: Dispatcher) -> None:
     dp.register_message_handler(inputLogin, state=firstUse.INPUT_LOGIN)
     dp.register_message_handler(inputPassword, state=firstUse.INPUT_PASSWORD)
-    dp.register_callback_query_handler(changeLogopass, lambda call: call.data =="changeLogopass", state=firstUse.INPUT_LOGIN)
+    dp.register_callback_query_handler(changeLogopass, lambda call: call.data =="changeLogopass", state='*')
     dp.register_message_handler(cancel, text='Отмена', state="*")
     dp.register_message_handler(endEXPIREDday, content_types=types.ContentType.TEXT, state=inputTime.ENDAY)
     pass
