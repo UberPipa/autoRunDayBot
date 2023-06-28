@@ -5,7 +5,7 @@ from peewee import Model, SqliteDatabase, CharField, IntegerField
 db_folder = 'db'
 if not os.path.exists(db_folder):
     os.makedirs(db_folder)
-db = SqliteDatabase(os.path.join(db_folder, 'users.db'))
+db = SqliteDatabase(os.path.join(db_folder, 'database.db'))
 
 
 class BaseModel(Model):

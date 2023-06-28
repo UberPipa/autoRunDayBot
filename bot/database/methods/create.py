@@ -8,6 +8,13 @@ async def get_yes_or_no(user_id: int) -> Union[Users, None]:
 
 
 async def create_user(call) -> None:
+
+    """
+    Создаёт юзера в сущности users
+    :param call:
+    :return: None
+    """
+
     user_id = call.from_user.id
     if not await get_yes_or_no(user_id):
         Users.create(
@@ -24,10 +31,18 @@ async def create_user(call) -> None:
 
 
 async def create_last_msg(call) -> None:
+
+    """
+    Создаёт юзера в сущности LastMsg
+    :param call:
+    :return: None
+    """
+
     user_id = call.from_user.id
     msg_id = call.message_id
     if not await get_yes_or_no(user_id):
         LastMsg.create(
             user_id=user_id,
-            msg_id=msg_id
+            msg_id=msg_id,
+
         )

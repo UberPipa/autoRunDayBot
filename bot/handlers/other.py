@@ -39,7 +39,7 @@ async def first_blood(call: Message, state: FSMContext) -> None:
         session, status, csrf = await getting_start(login, password)
 
         if status:
-            # Если логопас верен
+            # Если логопас верен генерируем текст
             answerText = await generationTextFirstBlood(status)
 
             await call.answer(
