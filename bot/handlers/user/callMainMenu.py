@@ -4,7 +4,6 @@ from bot.database.methods.get import get_last_msg
 from bot.database.methods.update import update_last_use
 from bot.keyboards.inline import inline_kbr_start
 from bot.misc.states import inputTime
-from bot.handlers.other import first_blood
 from bot.misc.util import checkCurrentDay, generationTextFirstBlood
 from bot.startEndDay.actions.actions import reopen_day, close_day, open_day, pause_day
 from bot.startEndDay.actions.statusWork import getting_start
@@ -231,7 +230,7 @@ async def get_status(call: types.CallbackQuery, state: FSMContext) -> None:
         await call.answer(text='Неверно указан логин или пароль')
 
 
-def user_call_handlers(dp: Dispatcher) -> None:
+def user_call_main_menu_handlers(dp: Dispatcher) -> None:
     dp.register_callback_query_handler(openReopen_day, lambda call: call.data == 'startDay', state='*')
     dp.register_callback_query_handler(closed_day, lambda call: call.data =="endDay", state='*')
     dp.register_callback_query_handler(coffeBreak_day, lambda call: call.data == "pauseDay", state='*')

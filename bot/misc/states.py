@@ -7,3 +7,6 @@ class firstUse(StatesGroup):
 
 class inputTime(StatesGroup):
     ENDAY = State()
+
+class referenceMenu(StatesGroup):
+    INMENU = State()

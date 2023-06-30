@@ -2,6 +2,7 @@ from bot.database.models.users import LastMsg
 
 
 async def get_last_msg(call) -> None:
+
     """
         Receives the last message for the user.
     """
