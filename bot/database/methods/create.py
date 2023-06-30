@@ -37,7 +37,7 @@ async def create_user(call) -> None:
         )
 
 
-async def create_last_msg(call) -> None:
+async def create_last_msg_user(call) -> None:
 
     """
     Создаёт юзера в сущности LastMsg

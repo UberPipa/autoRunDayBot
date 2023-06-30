@@ -1,5 +1,4 @@
 from datetime import datetime
-
 from bot.database.models.users import Users, LastMsg
 
 
@@ -17,7 +16,7 @@ async def update_last_use(call) -> None:
     user.save()
 
 
-async def update_last_msg(call) -> None:
+async def update_last_msg(call, message_id) -> None:
 
     """
         Фиксирует id последнего сообщения
@@ -26,5 +25,5 @@ async def update_last_msg(call) -> None:
     # Устанавливаем определённого пользователя
     user = LastMsg.get(LastMsg.user_id == call.from_user.id)
 
-    user.msg_id = call.message_id
+    user.msg_id = message_id
     user.save()
