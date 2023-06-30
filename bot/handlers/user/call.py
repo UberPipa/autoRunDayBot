@@ -42,11 +42,8 @@ async def openReopen_day(call: types.CallbackQuery, state: FSMContext) -> None:
                 await open_day(session, csrf)
             await call.answer(text='Рабочий день начат')
             # Edit last msg
-
             # Receives the last message for the user.
             message_id = await get_last_msg(call)
-
-            # reply_markup = types.InlineKeyboardMarkup()  # Создаем пустую клавиатуру
             # get new status session
             session, status, csrf = await getting_start(login, password)
             # create new text
@@ -70,6 +67,8 @@ async def closed_day(call: types.CallbackQuery, state: FSMContext) -> None:
         Закрывает рабочий день
     """
 
+    bot: Bot = call.bot
+
     user = Users.get_by_id(call.from_user.id)
     login = user.login
     password = user.password
@@ -87,7 +86,21 @@ async def closed_day(call: types.CallbackQuery, state: FSMContext) -> None:
         else:
             await close_day(session, csrf)
             await call.answer(text='Рабочий день закрыт')
+
+            # Edit last msg
+            # Receives the last message for the user.
+            message_id = await get_last_msg(call)
+            # get new status session
+            session, status, csrf = await getting_start(login, password)
+            # create new text
             answerText = await generationTextFirstBlood(status)
+            # new answer text
+            await bot.edit_message_text(
+                chat_id=call.from_user.id,
+                message_id=message_id,
+                text=answerText,
+                reply_markup=inline_kbr_start
+            )
 
     else:
         await call.answer(
@@ -100,6 +113,8 @@ async def coffeBreak_day(call: types.CallbackQuery, state: FSMContext) -> None:
     """
         Ставит на паузу рабочий день.
     """
+
+    bot: Bot = call.bot
 
     user = Users.get_by_id(call.from_user.id)
     login = user.login
@@ -128,10 +143,45 @@ async def coffeBreak_day(call: types.CallbackQuery, state: FSMContext) -> None:
             else:
                 await open_day(session, csrf)
             await pause_day(session, csrf)
+
+            # Edit last msg
+            # Receives the last message for the user.
+            message_id = await get_last_msg(call)
+            # get new status session
+            session, status, csrf = await getting_start(login, password)
+            # create new text
+            answerText = await generationTextFirstBlood(status)
+            # new answer text
+            await bot.edit_message_text(
+                chat_id=call.from_user.id,
+                message_id=message_id,
+                text=answerText,
+                reply_markup=inline_kbr_start
+            )
+
             await call.answer(text='Рабочий день приостановлен')
+
         else:
+
             await pause_day(session, csrf)
+
+            # Edit last msg
+            # Receives the last message for the user.
+            message_id = await get_last_msg(call)
+            # get new status session
+            session, status, csrf = await getting_start(login, password)
+            # create new text
+            answerText = await generationTextFirstBlood(status)
+            # new answer text
+            await bot.edit_message_text(
+                chat_id=call.from_user.id,
+                message_id=message_id,
+                text=answerText,
+                reply_markup=inline_kbr_start
+            )
+
             await call.answer(text='Рабочий день приостановлен')
+
     else:
         await call.answer(text='Неверно указан логин или пароль.')
 
@@ -164,7 +214,18 @@ async def get_status(call: types.CallbackQuery, state: FSMContext) -> None:
 
         else:
 
-            await first_blood(call, state)
+            # Edit last msg
+            # Receives the last message for the user.
+            message_id = await get_last_msg(call)
+            # create new text
+            answerText = await generationTextFirstBlood(status)
+            # new answer text
+            await bot.edit_message_text(
+                chat_id=call.from_user.id,
+                message_id=message_id,
+                text=answerText,
+                reply_markup=inline_kbr_start
+            )
 
     else:
         await call.answer(text='Неверно указан логин или пароль')

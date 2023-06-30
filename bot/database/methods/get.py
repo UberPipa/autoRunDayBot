@@ -9,5 +9,4 @@ async def get_last_msg(call) -> None:
     # Устанавливаем определённого пользователя
     user = LastMsg.get(LastMsg.user_id == call.from_user.id)
 
-    print(user.msg_id)
     return user.msg_id
