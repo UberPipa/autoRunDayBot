@@ -2,6 +2,7 @@ from aiogram import Dispatcher, types, Bot
 from aiogram.dispatcher import FSMContext
 from bot.database.methods.get import get_last_msg
 from bot.database.methods.update import update_last_use
+from bot.keyboards.inline import inline_kbr_start
 from bot.misc.states import inputTime
 from bot.handlers.other import first_blood
 from bot.misc.util import checkCurrentDay, generationTextFirstBlood
@@ -45,16 +46,17 @@ async def openReopen_day(call: types.CallbackQuery, state: FSMContext) -> None:
             # Receives the last message for the user.
             message_id = await get_last_msg(call)
 
-            reply_markup = types.InlineKeyboardMarkup()  # Создаем пустую клавиатуру
+            # reply_markup = types.InlineKeyboardMarkup()  # Создаем пустую клавиатуру
+            # get new status session
+            session, status, csrf = await getting_start(login, password)
             # create new text
-
             answerText = await generationTextFirstBlood(status)
-            print(answerText)
+            # new answer text
             await bot.edit_message_text(
                 chat_id=call.from_user.id,
                 message_id=message_id,
                 text=answerText,
-                reply_markup=reply_markup
+                reply_markup=inline_kbr_start
             )
     else:
         await call.answer(
