@@ -2,9 +2,10 @@ from bot.database.models.users import LastMsg
 
 
 async def get_last_msg(call) -> None:
-
     """
-        Receives the last message for the user.
+    Receives the last message for the user.
+    :param call:
+    :return:
     """
 
     # Устанавливаем определённого пользователя

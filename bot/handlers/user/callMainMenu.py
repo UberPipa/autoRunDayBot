@@ -182,7 +182,9 @@ async def coffeBreak_day(call: types.CallbackQuery, state: FSMContext) -> None:
             await call.answer(text='Рабочий день приостановлен')
 
     else:
-        await call.answer(text='Неверно указан логин или пароль.')
+        await call.answer(
+            text='Неверно указан логин или пароль.'
+        )
 
 
 

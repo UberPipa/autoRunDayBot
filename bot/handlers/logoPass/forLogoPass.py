@@ -2,6 +2,8 @@ from aiogram import types
 from aiogram.dispatcher import FSMContext
 from aiogram.types import Message
 from aiogram import Dispatcher
+
+from bot.database.methods.get import get_last_msg
 from bot.handlers.logoPass.otherFuncForLogopass import startInputLogopass
 from bot.handlers.other import first_blood
 from bot.misc.states import firstUse, inputTime
@@ -11,11 +13,11 @@ from bot.startEndDay.actions.statusWork import getting_start
 
 
 async def inputLogin(msg: Message, state: FSMContext) -> None:
-
     """
-
-        Записывает в состоянии FSM логин
-
+    Записывает в состоянии FSM логин
+    :param msg:
+    :param state:
+    :return:
     """
 
     user = Users.get_by_id(msg.from_user.id)
@@ -31,11 +33,11 @@ async def inputLogin(msg: Message, state: FSMContext) -> None:
 
 
 async def inputPassword(msg: Message, state: FSMContext) -> None:
-
     """
-
-        Записывает в состоянии FSM пароль
-
+    Записывает в состоянии FSM пароль
+    :param msg:
+    :param state:
+    :return:
     """
 
     user = Users.get_by_id(msg.from_user.id)
@@ -47,9 +49,11 @@ async def inputPassword(msg: Message, state: FSMContext) -> None:
 
 
 async def changeLogopass(call: Message, state: FSMContext) -> None:
-
     """
-        Хендлер для изминения логопаса
+    Хендлер для изминения логопаса
+    :param call:
+    :param state:
+    :return:
     """
 
     await startInputLogopass(call, state)
@@ -57,14 +61,26 @@ async def changeLogopass(call: Message, state: FSMContext) -> None:
 
 
 async def cancel(msg: Message, state: FSMContext) -> None:
-    """ Для кнопки отмены """
+    """
+    Для кнопки отмены.
+    :param msg:
+    :param state:
+    :return:
+    """
+
     await state.finish()
     await first_blood(msg, state)
 
 
 """ Это убрать """
 async def endEXPIREDday(msg: Message, state: FSMContext) -> None:
-    """ Функция завершает рабочий день, котоырй забыли завкрыть """
+    """
+    Функция завершает рабочий день, котоырй забыли завкрыть.
+    :param msg:
+    :param state:
+    :return:
+    """
+
     try:
         hour = int(msg.text)
         await msg.answer(text=f'Ок, день завершёл в {hour}')

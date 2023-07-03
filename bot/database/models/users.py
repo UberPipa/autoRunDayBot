@@ -1,7 +1,6 @@
 import os
 from peewee import Model, SqliteDatabase, CharField, IntegerField
 
-
 db_folder = 'db'
 if not os.path.exists(db_folder):
     os.makedirs(db_folder)
@@ -29,8 +28,9 @@ class LastMsg(BaseModel):
     msg_id = IntegerField(null=True)
 
 
-
 """ Регистрация сущностей """
+
+
 def register_models() -> None:
     for model in BaseModel.__subclasses__():
         model.create_table()

@@ -15,6 +15,14 @@ kbr_incorrect_logopass = InlineKeyboardMarkup()
 """ Клавиатура для смены логопаса """
 kbr_incorrect_logopass.add(InlineKeyboardButton(text='Сменить логопас'.upper(), callback_data="changeLogopass"))
 
+
 kbr_yankee_go_home = InlineKeyboardMarkup()
 """ кнопка назад """
 kbr_yankee_go_home.add(InlineKeyboardButton(text='Назад'.upper(), callback_data="statusDay"))
+
+
+kbr_menuSettings = InlineKeyboardMarkup()
+""" Клавиатура для меню настроек """
+kbr_menuSettings.add(InlineKeyboardButton(text=f'Авто завершение дня'.upper(), callback_data="autoStopDayNineHours"))
+kbr_menuSettings.add(InlineKeyboardButton(text='Сменить логопас'.upper(), callback_data="changeLogopass"))
+kbr_menuSettings.add(InlineKeyboardButton(text='Назад'.upper(), callback_data="statusDay"))

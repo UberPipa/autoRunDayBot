@@ -1,11 +1,13 @@
 from datetime import datetime
+from bot.database.methods.create import get_yes_or_no
 from bot.database.models.users import Users, LastMsg
 
 
 async def update_last_use(call) -> None:
-
     """
-        Фиксирует последнее использование бота
+    Фиксирует последнее использование бота
+    :param call:
+    :return:
     """
 
     time_last_use = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
@@ -17,9 +19,11 @@ async def update_last_use(call) -> None:
 
 
 async def update_last_msg(call, message_id) -> None:
-
     """
-        Фиксирует id последнего сообщения
+    Фиксирует id последнего сообщения
+    :param call:
+    :param message_id:
+    :return:
     """
 
     # Устанавливаем определённого пользователя

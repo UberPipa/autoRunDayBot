@@ -14,7 +14,6 @@ async def generationTextFirstBlood(status) -> str:
 
     """
 
-
     nowTime = datetime.datetime.now()
     nowTime = nowTime.strftime('%Y-%m-%d %H:%M:%S')
     text = f'По состоянию на: <code>{nowTime}</code>.\n'
@@ -36,11 +35,8 @@ async def generationTextFirstBlood(status) -> str:
     if status['INFO']['DATE_START']:
 
         """ 
-        
-            Проверяем когда был последний старт дня 
-            
+        Проверяем когда был последний старт дня   
         """
-
 
         if checkCurrentDay(status):
 
@@ -57,9 +53,7 @@ async def generationTextFirstBlood(status) -> str:
     if status['INFO']['DATE_FINISH'] and status['STATE'] == 'CLOSED':
 
         """ 
-
-            Показывает время завершения 
-
+        Показывает время завершения 
         """
 
         if checkCurrentDay(status):
@@ -73,9 +67,7 @@ async def generationTextFirstBlood(status) -> str:
     if status['STATE'] == 'OPENED' or status['STATE'] == 'PAUSED':
 
         """ 
-        
-            Показывает время работы 
-            
+        Показывает время работы 
         """
 
         timeStart = status['INFO']['DATE_START']
@@ -91,25 +83,21 @@ async def generationTextFirstBlood(status) -> str:
     if status['STATE'] == 'OPENED' or status['STATE'] == 'PAUSED':
 
         """ 
-        
-            Показывает рекомендуемое время завершения
-            
+        Показывает рекомендуемое время завершения
         """
 
         timeStart = int(status['INFO']['DATE_START'])
         nineHours = 32400
         reccomendedTimeEndWork = datetime.datetime.fromtimestamp(timeStart + nineHours)
         reccomendedTimeEndWork = reccomendedTimeEndWork.strftime('%H:%M:%S')
-        reccomendedTimeEndWork = f'Рекомендуем завершить в: <code>{reccomendedTimeEndWork}</code>.\n'
+        reccomendedTimeEndWork = f'Рабочий день заканчивается в: <code>{reccomendedTimeEndWork}</code>.\n'
         text += reccomendedTimeEndWork
 
 
     if status['INFO']['DATE_FINISH'] and status['STATE'] == 'CLOSED' and status['INFO']['DATE_START']:
 
         """ 
-        
-            Показывает сколько всего проработал 
-            
+        Показывает сколько всего проработал   
         """
 
         if checkCurrentDay(status):
@@ -165,8 +153,11 @@ async def delete_inline_and_msg(msg) -> None:
     message_id = msg.message_id - 1  # Идентификатор предыдущего сообщения
     reply_markup = types.InlineKeyboardMarkup()  # Создаем пустую клавиатуру
     try:
-        await bot.edit_message_reply_markup(chat_id=chat_id, message_id=message_id,
-                                            reply_markup=reply_markup)  # Отправляем отредактированное сообщение с пустой клавиатурой
+        # Отправляем отредактированное сообщение с пустой клавиатурой
+        await bot.edit_message_reply_markup(
+            chat_id=chat_id, message_id=message_id,
+            reply_markup=reply_markup
+        )
     except MessageCantBeEdited:
         # print("Сообщение не может быть отредактировано")
         pass
