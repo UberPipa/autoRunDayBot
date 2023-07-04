@@ -1,6 +1,7 @@
 from aiogram.dispatcher import FSMContext
 from aiogram.types import Message
 from aiogram import Dispatcher, types, Bot
+from aiogram.utils.exceptions import MessageNotModified
 
 from bot.database.methods.get import get_last_msg
 from bot.database.methods.other import checkLogoPass
@@ -111,25 +112,15 @@ async def reference(call: types.CallbackQuery, state: FSMContext) -> None:
     # Edit last msg
     # Receives the last message for the user.
     message_id = await get_last_msg(call)
-    await bot.edit_message_reply_markup(
+    await bot.edit_message_text(
         chat_id=call.from_user.id,
         message_id=message_id,
-        reply_markup=reply_markup
-    )
-
-    # sending a new message
-    sent_message = await bot.send_message(
-        chat_id=call.from_user.id,
         text='v.0.85 (minor)\n'
              '- Бот полностью перенесён на инлайн кнопки\n'
              '- Появился учёт рабочего времени и рекомендуемое время завершения\n'
              '- Появилась возможность ставить рабочий день на паузу',
         reply_markup=kbr_yankee_go_home
     )
-
-    # get id msg from bot
-    message_id = sent_message.message_id
-    await update_last_msg(call, message_id)
 
 
 async def echo(msg: Message, state: FSMContext) -> None:
@@ -143,9 +134,18 @@ async def echo(msg: Message, state: FSMContext) -> None:
 
     print('Я в эхо')
     bot: Bot = msg.bot
-    chat_id = msg.chat.id
+
     message_id = await get_last_msg(msg)
-    await bot.delete_message(chat_id=chat_id, message_id=message_id)
+    reply_markup = types.InlineKeyboardMarkup()
+    try:
+        await bot.edit_message_reply_markup(
+            chat_id=msg.from_user.id,
+            message_id=message_id,
+            reply_markup=reply_markup
+        )
+    except MessageNotModified:
+        pass
+    
     await first_blood(msg, state)
 
 

@@ -12,9 +12,11 @@ import datetime
 
 
 async def openReopen_day(call: types.CallbackQuery, state: FSMContext) -> None:
-
     """
-        Переоткрывает рабочий день.
+    Переоткрывает рабочий день.
+    :param call:
+    :param state:
+    :return:
     """
 
     bot: Bot = call.bot
@@ -61,9 +63,11 @@ async def openReopen_day(call: types.CallbackQuery, state: FSMContext) -> None:
 
 
 async def closed_day(call: types.CallbackQuery, state: FSMContext) -> None:
-
     """
-        Закрывает рабочий день
+    Закрывает рабочий день
+    :param call:
+    :param state:
+    :return:
     """
 
     bot: Bot = call.bot
@@ -108,9 +112,11 @@ async def closed_day(call: types.CallbackQuery, state: FSMContext) -> None:
 
 
 async def coffeBreak_day(call: types.CallbackQuery, state: FSMContext) -> None:
-
     """
-        Ставит на паузу рабочий день.
+    Ставит на паузу рабочий день.
+    :param call:
+    :param state:
+    :return:
     """
 
     bot: Bot = call.bot
@@ -188,11 +194,12 @@ async def coffeBreak_day(call: types.CallbackQuery, state: FSMContext) -> None:
 
 
 
-
 async def get_status(call: types.CallbackQuery, state: FSMContext) -> None:
-
     """
-        Получает текущий статус
+    Получает текущий статус
+    :param call:
+    :param state:
+    :return:
     """
 
     bot: Bot = call.bot

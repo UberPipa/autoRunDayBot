@@ -22,28 +22,16 @@ async def menuSettings(call: types.CallbackQuery, state: FSMContext) -> None:
 
     bot: Bot = call.bot
 
-    # create empty keyboard
-    reply_markup = types.InlineKeyboardMarkup()
-
     # Edit last msg
     # Receives the last message for the user.
     message_id = await get_last_msg(call)
-    await bot.edit_message_reply_markup(
+    await bot.edit_message_text(
         chat_id=call.from_user.id,
         message_id=message_id,
-        reply_markup=reply_markup
-    )
-
-    # sending a new message
-    sent_message = await bot.send_message(
-        chat_id=call.from_user.id,
         text='Меню натсроек.',
         reply_markup=kbr_menuSettings
     )
 
-    # get id msg from bot
-    message_id = sent_message.message_id
-    await update_last_msg(call, message_id)
 
 def user_call_settings_menu_handlers(dp: Dispatcher) -> None:
     dp.register_callback_query_handler(menuSettings, lambda call: call.data == 'settingDay', state='*')
