@@ -120,10 +120,6 @@ async def reference(call: types.CallbackQuery, state: FSMContext) -> None:
 
     bot: Bot = call.bot
 
-    await state.set_state(referenceMenu.INMENU)
-    # create empty keyboard
-    reply_markup = types.InlineKeyboardMarkup()
-
     # Edit last msg
     # Receives the last message for the user.
     message_id = await get_last_msg(call)

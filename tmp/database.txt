@@ -1,0 +1,6 @@
+('user_id', 'login', 'password', 'first_use', 'last_use', 'first_name', 'last_name', 'username')
+(189442389, 'tarasov.ms@stdpr.ru', 'Tarasov123', '2023-07-03 18:07:20', '2023-07-04 14:07:52', 'Max', 'Tarasov', 'maximpacts')
+(287698721, 'karachenkov@stdpr.ru', 'Karachenkov123', '2023-07-04 13:04:08', '2023-07-04 13:04:47', 'Караченков Роман', None, 'roman3013')
+(445571398, 'petkus@stdpr.ru', 'EUqQnqeJKAHLvl7V', '2023-07-03 17:52:07', '2023-07-03 17:54:49', 'Никита', 'Петкус', 'vapemech')
+(917017560, '/start@stdpr.ru', 'jj', '2023-07-03 17:50:36', '2023-07-03 17:50:36', 'Катерина', 'Boyko', 'boykoKat')
+(1285846225, 'privalov@stdpr.ru', '22tatara', '2023-07-03 17:46:31', '2023-07-04 16:48:50', 'Артем', 'Привалов', 'tema_rrr')

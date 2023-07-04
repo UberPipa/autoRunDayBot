@@ -28,9 +28,7 @@ class LastMsg(BaseModel):
     msg_id = IntegerField(null=True)
 
 
-""" Регистрация сущностей """
-
-
 def register_models() -> None:
+    """ Регистрация сущностей """
     for model in BaseModel.__subclasses__():
         model.create_table()

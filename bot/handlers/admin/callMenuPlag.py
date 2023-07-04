@@ -1,4 +1,5 @@
 import os
+import sqlite3
 from pydoc import locate
 from aiogram import Dispatcher, types, Bot
 from aiogram.dispatcher import FSMContext
@@ -14,7 +15,6 @@ import datetime
 
 
 async def unloadingDB(call: types.CallbackQuery) -> None:
-
     """
     For admins functions
     :param call: call
@@ -37,6 +37,24 @@ async def unloadingDB(call: types.CallbackQuery) -> None:
 
     report_locate = os.path.join(mainDir, 'tmp', 'database.txt')
 
+    conn = sqlite3.connect(db_locate)
+    cursor = conn.cursor()
+    cursor.execute("SELECT * FROM users")
+    # create list
+    data = cursor.fetchall()
+    print(data)
+    with open(report_locate, 'w') as f:
+        # записываем заголовки
+        headers = "('user_id', 'login', 'password', 'first_use', 'last_use', 'first_name', 'last_name', 'username')\n"
+        f.write(headers)
+        for row in data:
+            f.write(str(row) + '\n')
+
+    report_locate = types.InputFile(report_locate)
+    await bot.send_document(
+        chat_id=call.message.chat.id,
+        document=report_locate
+    )
 
 
 def admin_call_plag_menu_handlers(dp: Dispatcher) -> None:
