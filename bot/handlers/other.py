@@ -9,7 +9,8 @@ from bot.database.methods.create import create_user, get_yes_or_no, create_last_
 from bot.database.methods.update import update_last_msg
 from bot.database.models.users import Users, LastMsg
 from bot.handlers.logoPass.otherFuncForLogopass import firstStartInputLogopass
-from bot.keyboards.inline import inline_kbr_start, kbr_incorrect_logopass, kbr_yankee_go_home
+from bot.keyboards.inline import inline_kbr_start, kbr_incorrect_logopass, kbr_yankee_go_home, kbr_plug
+from bot.misc.env import Admins
 from bot.misc.states import referenceMenu
 from bot.misc.util import generationTextFirstBlood
 from bot.startEndDay.actions.statusWork import getting_start
@@ -19,9 +20,9 @@ async def first_blood(call: Message, state: FSMContext) -> None:
 
     """
     Функция для 1‑го запуска
-    :param call:
-    :param state:
-    :return:
+    :param call: call
+    :param state: FSMContext
+    :return: None
     """
 
     bot: Bot = call.bot
@@ -76,31 +77,45 @@ async def first_blood(call: Message, state: FSMContext) -> None:
             await update_last_msg(call, message_id)
 
 
-async def plug(call: types.CallbackQuery, state: FSMContext) -> None:
+async def plug(call: types.CallbackQuery) -> None:
 
     """
-    Загрушка для не реализованных call
-    :param call:
-    :param state:
-    :return:
+    Menu for admins and change time
+    :param call: call
+    :param state: FSMContext
+    :return: None
     """
-
     bot: Bot = call.bot
 
-    await call.answer(
-        'Будем поделать.\n'
-        'Разработчик короткий ножка.',
-        show_alert=True
-    )
+    admins = Admins.ADMINS.split(',')
+    admins = tuple([int(i) for i in admins])
+
+    if call.from_user.id in admins:
+        # Edit last msg
+        # Receives the last message for the user.
+        message_id = await get_last_msg(call)
+        await bot.edit_message_text(
+            chat_id=call.from_user.id,
+            message_id=message_id,
+            text='Дополнительное меню.',
+            reply_markup=kbr_plug
+        )
+
+    else:
+        await call.answer(
+            'Будем поделать.\n'
+            'Разработчик короткий ножка.',
+            show_alert=True
+        )
 
 
 async def reference(call: types.CallbackQuery, state: FSMContext) -> None:
 
     """
     Reference
-    :param call:
-    :param state:
-    :return:
+    :param call: call
+    :param state: FSMContext
+    :return: None
     """
 
     bot: Bot = call.bot
@@ -124,15 +139,16 @@ async def reference(call: types.CallbackQuery, state: FSMContext) -> None:
 
 
 async def echo(msg: Message, state: FSMContext) -> None:
-
     """
     Eho
-    :param msg:
-    :param state:
-    :return:
+    :param msg: msg
+    :param state: FSMContext
+    :return: None
     """
 
     print('Я в эхо')
+    print(msg)
+
     bot: Bot = msg.bot
 
     message_id = await get_last_msg(msg)
@@ -145,13 +161,13 @@ async def echo(msg: Message, state: FSMContext) -> None:
         )
     except MessageNotModified:
         pass
-    
+
     await first_blood(msg, state)
 
 
 def register_other_handlers(dp: Dispatcher) -> None:
     dp.register_message_handler(first_blood, commands=['start'], state="*")
-    dp.register_callback_query_handler(plug, lambda call: call.data == 'plug', state='*')
+    dp.register_callback_query_handler(plug, lambda call: call.data == 'plug')
     dp.register_callback_query_handler(reference, lambda call: call.data == 'reference', state='*')
     """ ЭХО ФУНКЦИЯ ВСЕГДА ДОЛЖНА БЫТЬ В САМОМ НИЗУ!!! """
     dp.register_message_handler(echo, content_types=types.ContentType.ANY, state="*")

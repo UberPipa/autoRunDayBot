@@ -1,0 +1,44 @@
+import os
+from pydoc import locate
+from aiogram import Dispatcher, types, Bot
+from aiogram.dispatcher import FSMContext
+from bot.database.methods.get import get_last_msg
+from bot.database.methods.update import update_last_use, update_last_msg
+from bot.keyboards.inline import inline_kbr_start, kbr_menuSettings
+from bot.misc.states import inputTime
+from bot.misc.util import checkCurrentDay, generationTextFirstBlood
+from bot.startEndDay.actions.actions import reopen_day, close_day, open_day, pause_day
+from bot.startEndDay.actions.statusWork import getting_start
+from bot.database.models.users import Users, db_folder
+import datetime
+
+
+async def unloadingDB(call: types.CallbackQuery) -> None:
+
+    """
+    For admins functions
+    :param call: call
+    :param state: FSMContext
+    :return:
+    """
+
+    bot: Bot = call.bot
+
+    entry_point_path = os.path.abspath('main.py')
+    mainDir = os.path.abspath(os.path.join(entry_point_path, '..'))
+    db_locate = os.path.join(mainDir, 'db', 'database.db')
+
+    db = types.InputFile(db_locate)
+
+    await bot.send_document(
+        chat_id=call.message.chat.id,
+        document=db
+    )
+
+    report_locate = os.path.join(mainDir, 'tmp', 'database.txt')
+
+
+
+def admin_call_plag_menu_handlers(dp: Dispatcher) -> None:
+    dp.register_callback_query_handler(unloadingDB, lambda call: call.data == 'unloadingDB')
+    pass

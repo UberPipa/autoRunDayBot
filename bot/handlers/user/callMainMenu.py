@@ -9,6 +9,7 @@ from bot.startEndDay.actions.actions import reopen_day, close_day, open_day, pau
 from bot.startEndDay.actions.statusWork import getting_start
 from bot.database.models.users import Users
 import datetime
+from aiogram.dispatcher.filters.state import State
 
 
 async def openReopen_day(call: types.CallbackQuery, state: FSMContext) -> None:

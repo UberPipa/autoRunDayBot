@@ -1,22 +1,16 @@
 from aiogram import Dispatcher, types, Bot
 from aiogram.dispatcher import FSMContext
 from bot.database.methods.get import get_last_msg
-from bot.database.methods.update import update_last_use, update_last_msg
-from bot.keyboards.inline import inline_kbr_start, kbr_menuSettings
-from bot.misc.states import inputTime
-from bot.misc.util import checkCurrentDay, generationTextFirstBlood
-from bot.startEndDay.actions.actions import reopen_day, close_day, open_day, pause_day
-from bot.startEndDay.actions.statusWork import getting_start
-from bot.database.models.users import Users
-import datetime
+from bot.keyboards.inline import kbr_menuSettings
+
 
 
 async def menuSettings(call: types.CallbackQuery, state: FSMContext) -> None:
 
     """
     Reference
-    :param call:
-    :param state:
+    :param call: call
+    :param state: FSMContext
     :return:
     """
 
@@ -28,7 +22,7 @@ async def menuSettings(call: types.CallbackQuery, state: FSMContext) -> None:
     await bot.edit_message_text(
         chat_id=call.from_user.id,
         message_id=message_id,
-        text='Меню натсроек.',
+        text='Меню настроек.',
         reply_markup=kbr_menuSettings
     )
 

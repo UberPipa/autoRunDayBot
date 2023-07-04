@@ -7,11 +7,13 @@ from bot.startEndDay.data import headers
 
 async def getting_start(login, password) -> Union[object, dict, bool]:
     """
-
-         Функция логинит пользователя, получает csrf токен и получает статус.
-         После этой функции можно совершать действия с аккаунтом.
-
+    Функция логинит пользователя, получает csrf токен и получает статус.
+    После этой функции можно совершать действия с аккаунтом.
+    :param login: from env
+    :param password: from env
+    :return: object | dict | bool
     """
+
     session = requests.Session()
     authorization = session.post(
         'https://bitrix.stdpr.ru',

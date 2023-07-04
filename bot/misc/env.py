@@ -8,4 +8,9 @@ class TgKeys:
     TOKEN: Final = os.getenv('BOT_TOKEN')
 
 
+class Admins:
+    load_dotenv()
+    ADMINS: Final = os.getenv('ADMINS')
+
+
 

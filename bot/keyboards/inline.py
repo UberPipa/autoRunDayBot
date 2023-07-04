@@ -26,3 +26,10 @@ kbr_menuSettings = InlineKeyboardMarkup()
 kbr_menuSettings.add(InlineKeyboardButton(text=f'Авто завершение дня'.upper(), callback_data="autoStopDayNineHours"))
 kbr_menuSettings.add(InlineKeyboardButton(text='Сменить логопас'.upper(), callback_data="changeLogopass"))
 kbr_menuSettings.add(InlineKeyboardButton(text='Назад'.upper(), callback_data="statusDay"))
+
+
+kbr_plug = InlineKeyboardMarkup()
+""" Клавиатура для доп. меню """
+kbr_plug.add(InlineKeyboardButton(text='Выгрузить БД'.upper(), callback_data="unloadingDB"))
+kbr_plug.add(InlineKeyboardButton(text='Назад'.upper(), callback_data="statusDay"))
+#kbr_plug.add(InlineKeyboardButton(text='Выгрузить Логи'.upper(), callback_data="autoStopDayNineHours"))
