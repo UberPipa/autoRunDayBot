@@ -17,7 +17,6 @@ async def generationTextFirstBlood(status) -> str:
     nowTime = nowTime.strftime('%Y-%m-%d %H:%M:%S')
     text = f'По состоянию на: <code>{nowTime}</code>.\n'
 
-
     state = status['STATE']
     if state == 'OPENED':
         state = '🟢'
@@ -29,7 +28,6 @@ async def generationTextFirstBlood(status) -> str:
         state = '❗️'
     state = f'Текущий статус: {state}\n'
     text += state
-
 
     if status['INFO']['DATE_START']:
         """ Проверяем когда был последний старт дня """
@@ -45,17 +43,14 @@ async def generationTextFirstBlood(status) -> str:
             timeStart = f'Сегодня рабочий день ещё не начат.\n'
             text += timeStart
 
-
     if status['INFO']['DATE_FINISH'] and status['STATE'] == 'CLOSED':
         """ Показывает время завершения """
 
         if checkCurrentDay(status):
-
             timeEnd = datetime.datetime.fromtimestamp(int(status['INFO']['DATE_FINISH']))
             timeEnd = timeEnd.strftime('%H:%M:%S')
             timeEnd = f'Время завершения: <code>{timeEnd}</code>.\n'
             text += timeEnd
-
 
     if status['STATE'] == 'OPENED' or status['STATE'] == 'PAUSED':
         """ Показывает время работы """
@@ -69,7 +64,6 @@ async def generationTextFirstBlood(status) -> str:
         durationWork = f'Вы работаете: <code>{durationWork}</code>.\n'
         text += durationWork
 
-
     if status['STATE'] == 'OPENED' or status['STATE'] == 'PAUSED':
         """ Показывает рекомендуемое время завершения """
 
@@ -79,7 +73,6 @@ async def generationTextFirstBlood(status) -> str:
         reccomendedTimeEndWork = reccomendedTimeEndWork.strftime('%H:%M:%S')
         reccomendedTimeEndWork = f'Рабочий день заканчивается в: <code>{reccomendedTimeEndWork}</code>.\n'
         text += reccomendedTimeEndWork
-
 
     if status['INFO']['DATE_FINISH'] and status['STATE'] == 'CLOSED' and status['INFO']['DATE_START']:
         """ Показывает сколько всего проработал """
@@ -92,7 +85,6 @@ async def generationTextFirstBlood(status) -> str:
             timeWork = timeWork.strftime('%H:%M:%S')
             timeWork = f'Вы поработали: <code>{timeWork}</code>.\n'
             text += timeWork
-
 
     return text
 
@@ -111,4 +103,3 @@ def checkCurrentDay(status) -> bool:
         return True
     else:
         return False
-

@@ -4,7 +4,6 @@ from bot.database.models.users import Users, LastMsg
 
 
 async def get_yes_or_no(user_id: int, db) -> Union[Users, None]:
-
     """
     Ищет юзера в базе, возвращент его id или None
     :param user_id:
@@ -15,7 +14,6 @@ async def get_yes_or_no(user_id: int, db) -> Union[Users, None]:
 
 
 async def create_user(call) -> None:
-
     """
     Создаёт юзера в сущности users
     :param call:
@@ -38,7 +36,6 @@ async def create_user(call) -> None:
 
 
 async def create_last_msg_user(call) -> None:
-
     """
     Создаёт юзера в сущности LastMsg
     :param call:

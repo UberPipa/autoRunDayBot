@@ -17,7 +17,6 @@ from bot.startEndDay.actions.statusWork import getting_start
 
 
 async def first_blood(call: Message, state: FSMContext) -> None:
-
     """
     Функция для 1‑го запуска
     :param call: call
@@ -78,7 +77,6 @@ async def first_blood(call: Message, state: FSMContext) -> None:
 
 
 async def plug(call: types.CallbackQuery) -> None:
-
     """
     Menu for admins and change time
     :param call: call
@@ -110,7 +108,6 @@ async def plug(call: types.CallbackQuery) -> None:
 
 
 async def reference(call: types.CallbackQuery, state: FSMContext) -> None:
-
     """
     Reference
     :param call: call

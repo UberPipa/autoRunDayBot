@@ -6,7 +6,6 @@ from bot.keyboards.inline import kbr_menuSettings
 
 
 async def menuSettings(call: types.CallbackQuery, state: FSMContext) -> None:
-
     """
     Reference
     :param call: call

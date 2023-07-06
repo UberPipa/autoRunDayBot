@@ -141,10 +141,7 @@ async def coffeBreak_day(call: types.CallbackQuery, state: FSMContext) -> None:
                 Проверяем когда был последний старт дня, если сегодня, то применяем reopen, если нет, то open,
                 Затем ставим день на паузу
             """
-            last_date_start = datetime.datetime.fromtimestamp(int(status['INFO']['DATE_START']))
-            last_date_start = last_date_start.date()
-            today = datetime.date.today()
-            if last_date_start == today:
+            if checkCurrentDay(status):
                 await reopen_day(session, csrf)
             else:
                 await open_day(session, csrf)
