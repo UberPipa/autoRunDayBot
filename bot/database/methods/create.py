@@ -1,6 +1,6 @@
 from datetime import datetime
 from typing import Union
-from bot.database.models.users import Users, LastMsg
+from bot.database.models.users import Users, LastMsg, AutoManageDay
 
 
 async def get_yes_or_no(user_id: int, db) -> Union[Users, None]:
@@ -48,5 +48,22 @@ async def create_last_msg_user(call) -> None:
         LastMsg.create(
             user_id=user_id,
             msg_id=msg_id,
+
+        )
+
+
+async def create_auto_manage_day_user(call) -> None:
+    """
+    Создаёт юзера в сущности AutoManageDay
+    :param call:
+    :return: None
+    """
+
+    user_id = call.from_user.id
+    if not await get_yes_or_no(user_id, AutoManageDay):
+        AutoManageDay.create(
+            user_id=user_id,
+            auto_stop=False,
+            current_status=None
 
         )
