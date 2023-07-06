@@ -5,9 +5,9 @@ from aiogram.utils.exceptions import MessageNotModified
 
 from bot.database.methods.get import get_last_msg
 from bot.database.methods.other import checkLogoPass
-from bot.database.methods.create import create_user, get_yes_or_no, create_last_msg_user
+from bot.database.methods.create import create_user, get_yes_or_no, create_last_msg_user, create_auto_manage_day_user
 from bot.database.methods.update import update_last_msg
-from bot.database.models.users import Users, LastMsg
+from bot.database.models.users import Users, LastMsg, AutoManageDay
 from bot.handlers.logoPass.otherFuncForLogopass import firstStartInputLogopass
 from bot.keyboards.inline import inline_kbr_start, kbr_incorrect_logopass, kbr_yankee_go_home, kbr_plug
 from bot.misc.env import Admins
@@ -28,12 +28,18 @@ async def first_blood(call: Message, state: FSMContext) -> None:
 
     user_id = call.from_user.id
     await call.delete()
+
     # Пытаемся получить id юзера
     if not await get_yes_or_no(user_id, Users):
         """ Создаются таблицы, если отсутсвуют """
         await create_user(call)
+
     if not await get_yes_or_no(user_id, LastMsg):
         await create_last_msg_user(call)
+
+    if not await get_yes_or_no(user_id, AutoManageDay):
+        await create_auto_manage_day_user(call)
+
     # Проверяем на присутсвие логопаса
     if not await checkLogoPass(user_id):
         # Eсли логопаса нет, запускаем функцию для ввода

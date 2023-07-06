@@ -5,7 +5,6 @@ from aiogram import Dispatcher, types, Bot
 from aiogram.dispatcher import FSMContext
 from bot.database.methods.get import get_last_msg
 from bot.database.methods.update import update_last_use, update_last_msg
-from bot.keyboards.inline import inline_kbr_start, kbr_menuSettings
 from bot.misc.states import inputTime
 from bot.misc.util import checkCurrentDay, generationTextFirstBlood
 from bot.startEndDay.actions.actions import reopen_day, close_day, open_day, pause_day

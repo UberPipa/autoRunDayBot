@@ -1,4 +1,5 @@
 from aiogram.types import InlineKeyboardMarkup, InlineKeyboardButton
+from bot.database.methods.get import get_onOff_auto_manage_day_user_auto_stop
 
 inline_kbr_start = InlineKeyboardMarkup()
 """ Клавиатура для first_blood """
@@ -21,11 +22,11 @@ kbr_yankee_go_home = InlineKeyboardMarkup()
 kbr_yankee_go_home.add(InlineKeyboardButton(text='Назад'.upper(), callback_data="statusDay"))
 
 
-kbr_menuSettings = InlineKeyboardMarkup()
-""" Клавиатура для меню настроек """
-kbr_menuSettings.add(InlineKeyboardButton(text=f'Авто завершение дня'.upper(), callback_data="autoStopDayNineHours"))
-kbr_menuSettings.add(InlineKeyboardButton(text='Сменить логопас'.upper(), callback_data="changeLogopass"))
-kbr_menuSettings.add(InlineKeyboardButton(text='Назад'.upper(), callback_data="statusDay"))
+# kbr_menuSettings = InlineKeyboardMarkup()
+# """ Клавиатура для меню настроек """
+# kbr_menuSettings.add(InlineKeyboardButton(text=f'Авто завершение дня - '.upper(), callback_data="autoStopDayNineHours"))
+# kbr_menuSettings.add(InlineKeyboardButton(text='Сменить логопас'.upper(), callback_data="changeLogopass"))
+# kbr_menuSettings.add(InlineKeyboardButton(text='Назад'.upper(), callback_data="statusDay"))
 
 
 kbr_plug = InlineKeyboardMarkup()

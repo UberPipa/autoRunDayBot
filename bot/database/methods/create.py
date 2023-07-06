@@ -64,6 +64,6 @@ async def create_auto_manage_day_user(call) -> None:
         AutoManageDay.create(
             user_id=user_id,
             auto_stop=False,
-            current_status=None
+            current_status=None,
 
         )
