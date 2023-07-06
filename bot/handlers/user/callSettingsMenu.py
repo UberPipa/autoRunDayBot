@@ -61,6 +61,9 @@ async def switch_autoStopDay(call: types.CallbackQuery) -> None:
     i = await get_onOff_auto_manage_day_user_auto_stop(call)
 
     if not i:
+        await call.answer(text='Рабочий день будет завершаться принудительно в 21:00')
+
+    if not i:
         i = '✅'
     else:
         i = '❌'
@@ -84,6 +87,8 @@ async def switch_autoStopDay(call: types.CallbackQuery) -> None:
         text='Меню настроек.',
         reply_markup=kbr_menuSettings
     )
+
+
 
 
 
