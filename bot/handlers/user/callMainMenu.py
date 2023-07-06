@@ -1,7 +1,7 @@
 from aiogram import Dispatcher, types, Bot
 from aiogram.dispatcher import FSMContext
 from bot.database.methods.get import get_last_msg
-from bot.database.methods.update import update_last_use
+from bot.database.methods.update import update_last_use, update_last_msg
 from bot.keyboards.inline import inline_kbr_start
 from bot.misc.states import inputTime
 from bot.misc.util import checkCurrentDay, generationTextFirstBlood
@@ -39,24 +39,53 @@ async def openReopen_day(call: types.CallbackQuery, state: FSMContext) -> None:
         else:
             """ Проверяет когда был последний старт дня, если сегодня, то вернёт True, если нет, то False  """
             if checkCurrentDay(status):
+                # if opened today, edit last msg
                 await reopen_day(session, csrf)
+                await call.answer(text='Рабочий день начат')
+                # Edit last msg
+                # Receives the last message for the user.
+                message_id = await get_last_msg(call)
+                # get new status session
+                session, status, csrf = await getting_start(login, password)
+                # create new text
+                answerText = await generationTextFirstBlood(status)
+                # new answer text
+                await bot.edit_message_text(
+                    chat_id=call.from_user.id,
+                    message_id=message_id,
+                    text=answerText,
+                    reply_markup=inline_kbr_start
+                )
+
             else:
+                # if Yesterday, send new msg
                 await open_day(session, csrf)
-            await call.answer(text='Рабочий день начат')
-            # Edit last msg
-            # Receives the last message for the user.
-            message_id = await get_last_msg(call)
-            # get new status session
-            session, status, csrf = await getting_start(login, password)
-            # create new text
-            answerText = await generationTextFirstBlood(status)
-            # new answer text
-            await bot.edit_message_text(
-                chat_id=call.from_user.id,
-                message_id=message_id,
-                text=answerText,
-                reply_markup=inline_kbr_start
-            )
+
+                message_id = await get_last_msg(call)
+                # create new text
+                reply_markup = types.InlineKeyboardMarkup()
+
+                await bot.edit_message_reply_markup(
+                    chat_id=call.from_user.id,
+                    message_id=message_id,
+                    reply_markup=reply_markup
+                )
+
+                # get new status session
+                session, status, csrf = await getting_start(login, password)
+                answerText = await generationTextFirstBlood(status)
+
+                sent_message = await bot.send_message(
+                    chat_id=call.from_user.id,
+                    text=answerText,
+                    reply_markup=inline_kbr_start
+                )
+
+                # get id msg from bot
+                message_id = sent_message.message_id
+                # save last msg
+                await update_last_msg(call, message_id)
+
     else:
         await call.answer(
             text='Неверно указан логин или пароль',
@@ -84,7 +113,7 @@ async def closed_day(call: types.CallbackQuery, state: FSMContext) -> None:
     if status:
         if status['STATE'] == 'EXPIRED':
             await state.set_state(inputTime.ENDAY)
-            await call.answer(text='Не завершён ра4бочий день, введите час(пока так) окончания рабочего дня. Формат 24 часа, 6 часов - это 6 утра!!!')
+            await call.answer(text='Не завершён рабочий день, введите час(пока так) окончания рабочего дня. Формат 24 часа, 6 часов - это 6 утра!!!')
         elif status['STATE'] == 'CLOSED':
             await call.answer(text='Рабочи день уже закрыт')
         else:
