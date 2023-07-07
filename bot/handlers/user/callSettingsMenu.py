@@ -1,9 +1,9 @@
 from aiogram import Dispatcher, types, Bot
 from aiogram.dispatcher import FSMContext
 from aiogram.types import InlineKeyboardMarkup, InlineKeyboardButton
-
 from bot.database.methods.get import get_last_msg, get_onOff_auto_manage_day_user_auto_stop
 from bot.database.methods.update import switch_onOff_auto_manage_day_user_auto_stop
+from bot.keyboards.util import get_kbr_menuSettings
 
 
 async def menuSettings(call: types.CallbackQuery) -> None:
@@ -16,28 +16,9 @@ async def menuSettings(call: types.CallbackQuery) -> None:
 
     bot: Bot = call.bot
 
+    kbr_menuSettings = await get_kbr_menuSettings(call)
     # Edit last msg
     # Receives the last message for the user.
-
-    i = await get_onOff_auto_manage_day_user_auto_stop(call)
-
-    if not i:
-        i = '✅'
-    else:
-        i = '❌'
-
-    kbr_menuSettings = InlineKeyboardMarkup()
-    kbr_menuSettings.add(InlineKeyboardButton(
-        text=f'Авто завершение дня - {i}'.upper(),
-        callback_data="autoStopDayNineHours")
-    )
-    kbr_menuSettings.add(InlineKeyboardButton(
-        text='Сменить логопас'.upper(), callback_data="changeLogopass")
-    )
-    kbr_menuSettings.add(
-        InlineKeyboardButton(text='Назад'.upper(), callback_data="statusDay")
-    )
-
     message_id = await get_last_msg(call)
     await bot.edit_message_text(
         chat_id=call.from_user.id,
@@ -59,26 +40,10 @@ async def switch_autoStopDay(call: types.CallbackQuery) -> None:
     await switch_onOff_auto_manage_day_user_auto_stop(call)
 
     i = await get_onOff_auto_manage_day_user_auto_stop(call)
-
     if not i:
         await call.answer(text='Рабочий день будет завершаться принудительно в 21:00')
 
-    if not i:
-        i = '✅'
-    else:
-        i = '❌'
-
-    kbr_menuSettings = InlineKeyboardMarkup()
-    kbr_menuSettings.add(InlineKeyboardButton(
-        text=f'Авто завершение дня - {i}'.upper(),
-        callback_data="autoStopDayNineHours")
-    )
-    kbr_menuSettings.add(InlineKeyboardButton(
-        text='Сменить логопас'.upper(), callback_data="changeLogopass")
-    )
-    kbr_menuSettings.add(
-        InlineKeyboardButton(text='Назад'.upper(), callback_data="statusDay")
-    )
+    kbr_menuSettings = await get_kbr_menuSettings(call)
 
     message_id = await get_last_msg(call)
     await bot.edit_message_text(
@@ -87,9 +52,6 @@ async def switch_autoStopDay(call: types.CallbackQuery) -> None:
         text='Меню настроек.',
         reply_markup=kbr_menuSettings
     )
-
-
-
 
 
 def user_call_settings_menu_handlers(dp: Dispatcher) -> None:

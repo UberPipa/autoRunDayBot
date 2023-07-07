@@ -41,7 +41,7 @@ async def unloadingDB(call: types.CallbackQuery) -> None:
     cursor.execute("SELECT * FROM users")
     # create list
     data = cursor.fetchall()
-    print(data)
+
     with open(report_locate, 'w') as f:
         # записываем заголовки
         headers = "('user_id', 'login', 'password', 'first_use', 'last_use', 'first_name', 'last_name', 'username')\n"

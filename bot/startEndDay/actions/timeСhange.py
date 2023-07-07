@@ -31,7 +31,6 @@ def change_startEnd_day(session, csrf, open_time, close_time, report='ㅤ') -> N
         }
     )
     status = close_last_day.text
-    print(status)
 
 
 def change_start_day(session, csrf, open_time, report='ㅤ') -> None:

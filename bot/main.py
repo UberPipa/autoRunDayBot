@@ -1,7 +1,8 @@
 from aiogram.utils import executor
 from aiogram import Bot, Dispatcher
 from aiogram.contrib.fsm_storage.memory import MemoryStorage
-
+import aioschedule
+import asyncio
 from bot.filters import register_all_filters
 from bot.misc import TgKeys
 from bot.handlers import register_all_handlers

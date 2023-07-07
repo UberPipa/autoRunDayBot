@@ -146,7 +146,6 @@ async def echo(msg: Message, state: FSMContext) -> None:
     """
 
     print('Я в эхо')
-    print(msg)
 
     bot: Bot = msg.bot
 
