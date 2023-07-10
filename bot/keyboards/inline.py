@@ -26,3 +26,8 @@ kbr_plug = InlineKeyboardMarkup()
 kbr_plug.add(InlineKeyboardButton(text='Выгрузить БД'.upper(), callback_data="unloadingDB"))
 kbr_plug.add(InlineKeyboardButton(text='Назад'.upper(), callback_data="statusDay"))
 #kbr_plug.add(InlineKeyboardButton(text='Выгрузить Логи'.upper(), callback_data="autoStopDayNineHours"))
+
+
+kbr_chek = InlineKeyboardMarkup()
+""" Клавиатура при отсутсвии интернета или отвала битрикса """
+kbr_chek.add(InlineKeyboardButton(text='Проверить соединение'.upper(), callback_data="statusDay"))

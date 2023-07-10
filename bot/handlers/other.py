@@ -2,14 +2,14 @@ from aiogram.dispatcher import FSMContext
 from aiogram.types import Message
 from aiogram import Dispatcher, types, Bot
 from aiogram.utils.exceptions import MessageNotModified
-
+from requests.exceptions import Timeout, RequestException, ConnectTimeout, ConnectionError
 from bot.database.methods.get import get_last_msg
 from bot.database.methods.other import checkLogoPass
 from bot.database.methods.create import create_user, get_yes_or_no, create_last_msg_user, create_auto_manage_day_user
 from bot.database.methods.update import update_last_msg
 from bot.database.models.users import Users, LastMsg, AutoManageDay
 from bot.handlers.logoPass.otherFuncForLogopass import firstStartInputLogopass
-from bot.keyboards.inline import inline_kbr_start, kbr_incorrect_logopass, kbr_yankee_go_home, kbr_plug
+from bot.keyboards.inline import inline_kbr_start, kbr_incorrect_logopass, kbr_yankee_go_home, kbr_plug, kbr_chek
 from bot.misc.env import Admins
 from bot.misc.states import referenceMenu
 from bot.misc.util import generationTextFirstBlood
@@ -51,35 +51,51 @@ async def first_blood(call: Message, state: FSMContext) -> None:
         login = user.login
         password = user.password
         # Получаем сессию
-        session, status, csrf = await getting_start(login, password)
 
-        if status:
-            # Если логопас верен генерируем текст
-            answerText = await generationTextFirstBlood(status)
+        try:
+            """ Проверяем на доступность сервера """
+            session, status, csrf = await getting_start(login, password)
+            if status:
+                # Если логопас верен генерируем текст
+                answerText = await generationTextFirstBlood(status)
 
-            await create_last_msg_user(call)
+                await create_last_msg_user(call)
+
+                sent_message = await bot.send_message(
+                    chat_id=call.chat.id,
+                    text=answerText,
+                    reply_markup=inline_kbr_start
+                )
+
+                # get id msg from bot
+                message_id = sent_message.message_id
+                await update_last_msg(call, message_id)
+
+
+            else:
+                # Если логопас не верен
+                sent_message = await bot.send_message(
+                    chat_id=call.chat.id,
+                    text='Неверно указан логин или пароль.',
+                    reply_markup=kbr_incorrect_logopass,
+                )
+
+                message_id = sent_message.message_id
+                await update_last_msg(call, message_id)
+
+        except (Timeout, ConnectionError, RequestException, ConnectTimeout) as e:
+            """ Если доступа нет, то отправляет месседж """
 
             sent_message = await bot.send_message(
                 chat_id=call.chat.id,
-                text=answerText,
-                reply_markup=inline_kbr_start
+                text='Отсутствует подключение к интернету или не доступен Битрикс',
+                reply_markup=kbr_chek,
             )
 
-            # get id msg from bot
             message_id = sent_message.message_id
             await update_last_msg(call, message_id)
 
 
-        else:
-            # Если логопас не верен
-            sent_message = await bot.send_message(
-                chat_id=call.chat.id,
-                text='Неверно указан логин или пароль.',
-                reply_markup=kbr_incorrect_logopass,
-            )
-
-            message_id = sent_message.message_id
-            await update_last_msg(call, message_id)
 
 
 async def plug(call: types.CallbackQuery) -> None:

@@ -2,14 +2,13 @@ from aiogram import Dispatcher, types, Bot
 from aiogram.dispatcher import FSMContext
 from bot.database.methods.get import get_last_msg
 from bot.database.methods.update import update_last_use, update_last_msg
-from bot.keyboards.inline import inline_kbr_start
+from bot.keyboards.inline import inline_kbr_start, kbr_chek
 from bot.misc.states import inputTime
 from bot.misc.util import checkCurrentDay, generationTextFirstBlood
 from bot.startEndDay.actions.actions import reopen_day, close_day, open_day, pause_day
 from bot.startEndDay.actions.statusWork import getting_start
 from bot.database.models.users import Users
-import datetime
-from aiogram.dispatcher.filters.state import State
+from requests.exceptions import Timeout, RequestException, ConnectTimeout, ConnectionError
 
 
 async def openReopen_day(call: types.CallbackQuery, state: FSMContext) -> None:
@@ -29,67 +28,81 @@ async def openReopen_day(call: types.CallbackQuery, state: FSMContext) -> None:
     await update_last_use(call)
 
     """ Стартуем сессию """
-    session, status, csrf = await getting_start(login, password)
-    if status:
-        if status['STATE'] == 'EXPIRED':
-            await state.set_state(inputTime.ENDAY)
-            await call.answer(text='Не завершён рабочий день, введите час(пока так) окончания рабочего дня. Формат 24 часа, 6 часов - это 6 утра!!!')
-        elif status['STATE'] == 'OPENED':
-            await call.answer(text='Рабочи день уже идёт')
-        else:
-            """ Проверяет когда был последний старт дня, если сегодня, то вернёт True, если нет, то False  """
-            if checkCurrentDay(status):
-                # if opened today, edit last msg
-                await reopen_day(session, csrf)
-                await call.answer(text='Рабочий день начат')
-                # Edit last msg
-                # Receives the last message for the user.
-                message_id = await get_last_msg(call)
-                # get new status session
-                session, status, csrf = await getting_start(login, password)
-                # create new text
-                answerText = await generationTextFirstBlood(status)
-                # new answer text
-                await bot.edit_message_text(
-                    chat_id=call.from_user.id,
-                    message_id=message_id,
-                    text=answerText,
-                    reply_markup=inline_kbr_start
-                )
+    try:
 
+        session, status, csrf = await getting_start(login, password)
+        if status:
+            if status['STATE'] == 'EXPIRED':
+                await state.set_state(inputTime.ENDAY)
+                await call.answer(text='Не завершён рабочий день, введите час(пока так) окончания рабочего дня. Формат 24 часа, 6 часов - это 6 утра!!!')
+            elif status['STATE'] == 'OPENED':
+                await call.answer(text='Рабочи день уже идёт')
             else:
-                # if Yesterday, send new msg
-                await open_day(session, csrf)
+                """ Проверяет когда был последний старт дня, если сегодня, то вернёт True, если нет, то False  """
+                if checkCurrentDay(status):
+                    # if opened today, edit last msg
+                    await reopen_day(session, csrf)
+                    await call.answer(text='Рабочий день начат')
+                    # Edit last msg
+                    # Receives the last message for the user.
+                    message_id = await get_last_msg(call)
+                    # get new status session
+                    session, status, csrf = await getting_start(login, password)
+                    # create new text
+                    answerText = await generationTextFirstBlood(status)
+                    # new answer text
+                    await bot.edit_message_text(
+                        chat_id=call.from_user.id,
+                        message_id=message_id,
+                        text=answerText,
+                        reply_markup=inline_kbr_start
+                    )
 
-                message_id = await get_last_msg(call)
-                # create new text
-                reply_markup = types.InlineKeyboardMarkup()
+                else:
+                    # if Yesterday, send new msg
+                    await open_day(session, csrf)
 
-                await bot.edit_message_reply_markup(
-                    chat_id=call.from_user.id,
-                    message_id=message_id,
-                    reply_markup=reply_markup
-                )
+                    message_id = await get_last_msg(call)
+                    # create new text
+                    reply_markup = types.InlineKeyboardMarkup()
 
-                # get new status session
-                session, status, csrf = await getting_start(login, password)
-                answerText = await generationTextFirstBlood(status)
+                    await bot.edit_message_reply_markup(
+                        chat_id=call.from_user.id,
+                        message_id=message_id,
+                        reply_markup=reply_markup
+                    )
 
-                sent_message = await bot.send_message(
-                    chat_id=call.from_user.id,
-                    text=answerText,
-                    reply_markup=inline_kbr_start
-                )
+                    # get new status session
+                    session, status, csrf = await getting_start(login, password)
+                    answerText = await generationTextFirstBlood(status)
 
-                # get id msg from bot
-                message_id = sent_message.message_id
-                # save last msg
-                await update_last_msg(call, message_id)
+                    sent_message = await bot.send_message(
+                        chat_id=call.from_user.id,
+                        text=answerText,
+                        reply_markup=inline_kbr_start
+                    )
 
-    else:
-        await call.answer(
-            text='Неверно указан логин или пароль',
+                    # get id msg from bot
+                    message_id = sent_message.message_id
+                    # save last msg
+                    await update_last_msg(call, message_id)
+
+        else:
+            await call.answer(
+                text='Неверно указан логин или пароль',
+            )
+
+    except (Timeout, ConnectionError, RequestException, ConnectTimeout) as e:
+        """ Если доступа нет, то отправляет месседж """
+
+        sent_message = await bot.send_message(
+            chat_id=call.chat.id,
+            text='Отсутствует подключение к интернету или не доступен Битрикс',
+            reply_markup=kbr_chek,
         )
+
+        message_id = sent_message.message_id
+        await update_last_msg(call, message_id)
 
 
 async def closed_day(call: types.CallbackQuery, state: FSMContext) -> None:
@@ -109,36 +122,50 @@ async def closed_day(call: types.CallbackQuery, state: FSMContext) -> None:
     # fixing the usage
     await update_last_use(call)
 
-    session, status, csrf = await getting_start(login, password)
-    if status:
-        if status['STATE'] == 'EXPIRED':
-            await state.set_state(inputTime.ENDAY)
-            await call.answer(text='Не завершён рабочий день, введите час(пока так) окончания рабочего дня. Формат 24 часа, 6 часов - это 6 утра!!!')
-        elif status['STATE'] == 'CLOSED':
-            await call.answer(text='Рабочи день уже закрыт')
-        else:
-            await close_day(session, csrf)
-            await call.answer(text='Рабочий день закрыт')
+    try:
 
-            # Edit last msg
-            # Receives the last message for the user.
-            message_id = await get_last_msg(call)
-            # get new status session
-            session, status, csrf = await getting_start(login, password)
-            # create new text
-            answerText = await generationTextFirstBlood(status)
-            # new answer text
-            await bot.edit_message_text(
-                chat_id=call.from_user.id,
-                message_id=message_id,
-                text=answerText,
-                reply_markup=inline_kbr_start
+        session, status, csrf = await getting_start(login, password)
+        if status:
+            if status['STATE'] == 'EXPIRED':
+                await state.set_state(inputTime.ENDAY)
+                await call.answer(text='Не завершён рабочий день, введите час(пока так) окончания рабочего дня. Формат 24 часа, 6 часов - это 6 утра!!!')
+            elif status['STATE'] == 'CLOSED':
+                await call.answer(text='Рабочи день уже закрыт')
+            else:
+                await close_day(session, csrf)
+                await call.answer(text='Рабочий день закрыт')
+
+                # Edit last msg
+                # Receives the last message for the user.
+                message_id = await get_last_msg(call)
+                # get new status session
+                session, status, csrf = await getting_start(login, password)
+                # create new text
+                answerText = await generationTextFirstBlood(status)
+                # new answer text
+                await bot.edit_message_text(
+                    chat_id=call.from_user.id,
+                    message_id=message_id,
+                    text=answerText,
+                    reply_markup=inline_kbr_start
+                )
+
+        else:
+            await call.answer(
+                text='Неверно указан логин или пароль.',
             )
 
-    else:
-        await call.answer(
-            text='Неверно указан логин или пароль.',
+    except (Timeout, ConnectionError, RequestException, ConnectTimeout) as e:
+        """ Если доступа нет, то отправляет месседж """
+
+        sent_message = await bot.send_message(
+            chat_id=call.from_user.id,
+            text='Отсутствует подключение к интернету или не доступен Битрикс',
+            reply_markup=kbr_chek,
         )
+
+        message_id = sent_message.message_id
+        await update_last_msg(call, message_id)
 
 
 async def coffeBreak_day(call: types.CallbackQuery, state: FSMContext) -> None:
@@ -157,68 +184,81 @@ async def coffeBreak_day(call: types.CallbackQuery, state: FSMContext) -> None:
 
     await update_last_use(call)
 
-    session, status, csrf = await getting_start(login, password)
-    if status:
-        if status['STATE'] == 'EXPIRED':
-            await state.set_state(inputTime.ENDAY)
-            await call.answer(text='Не завершён рабочий день, введите час(пока так) окончания рабочего дня. Формат 24 часа, 6 часов - это 6 утра!!!')
-        elif status['STATE'] == 'PAUSED':
-            await call.answer(text='Рабочи день уже приостановлен')
-        elif status['STATE'] == 'CLOSED':
-            """ 
-                Если мы нажимаем на паузу во время закрытого дня.
-                Проверяем когда был последний старт дня, если сегодня, то применяем reopen, если нет, то open,
-                Затем ставим день на паузу
-            """
-            if checkCurrentDay(status):
-                await reopen_day(session, csrf)
+    try:
+
+        session, status, csrf = await getting_start(login, password)
+        if status:
+            if status['STATE'] == 'EXPIRED':
+                await state.set_state(inputTime.ENDAY)
+                await call.answer(text='Не завершён рабочий день, введите час(пока так) окончания рабочего дня. Формат 24 часа, 6 часов - это 6 утра!!!')
+            elif status['STATE'] == 'PAUSED':
+                await call.answer(text='Рабочи день уже приостановлен')
+            elif status['STATE'] == 'CLOSED':
+                """ 
+                    Если мы нажимаем на паузу во время закрытого дня.
+                    Проверяем когда был последний старт дня, если сегодня, то применяем reopen, если нет, то open,
+                    Затем ставим день на паузу
+                """
+                if checkCurrentDay(status):
+                    await reopen_day(session, csrf)
+                else:
+                    await open_day(session, csrf)
+                await pause_day(session, csrf)
+
+                # Edit last msg
+                # Receives the last message for the user.
+                message_id = await get_last_msg(call)
+                # get new status session
+                session, status, csrf = await getting_start(login, password)
+                # create new text
+                answerText = await generationTextFirstBlood(status)
+                # new answer text
+                await bot.edit_message_text(
+                    chat_id=call.from_user.id,
+                    message_id=message_id,
+                    text=answerText,
+                    reply_markup=inline_kbr_start
+                )
+
+                await call.answer(text='Рабочий день приостановлен')
+
             else:
-                await open_day(session, csrf)
-            await pause_day(session, csrf)
 
-            # Edit last msg
-            # Receives the last message for the user.
-            message_id = await get_last_msg(call)
-            # get new status session
-            session, status, csrf = await getting_start(login, password)
-            # create new text
-            answerText = await generationTextFirstBlood(status)
-            # new answer text
-            await bot.edit_message_text(
-                chat_id=call.from_user.id,
-                message_id=message_id,
-                text=answerText,
-                reply_markup=inline_kbr_start
-            )
+                await pause_day(session, csrf)
 
-            await call.answer(text='Рабочий день приостановлен')
+                # Edit last msg
+                # Receives the last message for the user.
+                message_id = await get_last_msg(call)
+                # get new status session
+                session, status, csrf = await getting_start(login, password)
+                # create new text
+                answerText = await generationTextFirstBlood(status)
+                # new answer text
+                await bot.edit_message_text(
+                    chat_id=call.from_user.id,
+                    message_id=message_id,
+                    text=answerText,
+                    reply_markup=inline_kbr_start
+                )
+
+                await call.answer(text='Рабочий день приостановлен')
 
         else:
-
-            await pause_day(session, csrf)
-
-            # Edit last msg
-            # Receives the last message for the user.
-            message_id = await get_last_msg(call)
-            # get new status session
-            session, status, csrf = await getting_start(login, password)
-            # create new text
-            answerText = await generationTextFirstBlood(status)
-            # new answer text
-            await bot.edit_message_text(
-                chat_id=call.from_user.id,
-                message_id=message_id,
-                text=answerText,
-                reply_markup=inline_kbr_start
+            await call.answer(
+                text='Неверно указан логин или пароль.'
             )
 
-            await call.answer(text='Рабочий день приостановлен')
+    except (Timeout, ConnectionError, RequestException, ConnectTimeout) as e:
+        """ Если доступа нет, то отправляет месседж """
 
-    else:
-        await call.answer(
-            text='Неверно указан логин или пароль.'
+        sent_message = await bot.send_message(
+            chat_id=call.from_user.id,
+            text='Отсутствует подключение к интернету или не доступен Битрикс',
+            reply_markup=kbr_chek,
         )
 
+        message_id = sent_message.message_id
+        await update_last_msg(call, message_id)
 
 
 async def get_status(call: types.CallbackQuery, state: FSMContext) -> None:
@@ -236,34 +276,47 @@ async def get_status(call: types.CallbackQuery, state: FSMContext) -> None:
 
     await update_last_use(call)
 
-    session, status, csrf = await getting_start(login, password)
+    try:
 
-    if status:
+        session, status, csrf = await getting_start(login, password)
+        if status:
 
-        if status['STATE'] == 'EXPIRED':
+            if status['STATE'] == 'EXPIRED':
 
-            await state.set_state(inputTime.ENDAY)
-            await call.answer(text='Не завершён рабочий день, введите час(пока так) окончания рабочего дня. Формат 24 часа, 6 часов - это 6 утра!!!')
-            status = status['STATE']
-            await call.answer(text=status)
+                await state.set_state(inputTime.ENDAY)
+                await call.answer(text='Не завершён рабочий день, введите час(пока так) окончания рабочего дня. Формат 24 часа, 6 часов - это 6 утра!!!')
+                status = status['STATE']
+                await call.answer(text=status)
+
+            else:
+
+                # Edit last msg
+                # Receives the last message for the user.
+                message_id = await get_last_msg(call)
+                # create new text
+                answerText = await generationTextFirstBlood(status)
+                # new answer text
+                await bot.edit_message_text(
+                    chat_id=call.from_user.id,
+                    message_id=message_id,
+                    text=answerText,
+                    reply_markup=inline_kbr_start
+                )
 
         else:
+            await call.answer(text='Неверно указан логин или пароль')
 
-            # Edit last msg
-            # Receives the last message for the user.
-            message_id = await get_last_msg(call)
-            # create new text
-            answerText = await generationTextFirstBlood(status)
-            # new answer text
-            await bot.edit_message_text(
-                chat_id=call.from_user.id,
-                message_id=message_id,
-                text=answerText,
-                reply_markup=inline_kbr_start
-            )
+    except (Timeout, ConnectionError, RequestException, ConnectTimeout) as e:
+        """ Если доступа нет, то отправляет месседж """
 
-    else:
-        await call.answer(text='Неверно указан логин или пароль')
+        sent_message = await bot.send_message(
+            chat_id=call.from_user.id,
+            text='Отсутствует подключение к интернету или не доступен Битрикс',
+            reply_markup=kbr_chek,
+        )
+
+        message_id = sent_message.message_id
+        await update_last_msg(call, message_id)
 
 
 def user_call_main_menu_handlers(dp: Dispatcher) -> None:

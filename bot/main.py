@@ -5,16 +5,25 @@ from bot.filters import register_all_filters
 from bot.misc import TgKeys
 from bot.handlers import register_all_handlers
 from bot.database.models import register_models
+import asyncio
 
 
-async def __on_start_up(dp: Dispatcher) -> None:
+async def __on_start_up(dp: Dispatcher):
     register_all_filters(dp)
     register_all_handlers(dp)
     register_models()
+    task = asyncio.create_task(say_hello())
+    return task
+
+async def say_hello():
+    while True:
+        print("Привет")
+        await asyncio.sleep(2)
 
 
 def start_bot():
     bot = Bot(token=TgKeys.TOKEN.strip("'"), parse_mode='HTML')
     dp = Dispatcher(bot, storage=MemoryStorage())
     executor.start_polling(dp, skip_updates=True, on_startup=__on_start_up)
+
 

@@ -3,6 +3,7 @@ from typing import Union
 import requests
 from bot.startEndDay.actions.other import check_auth
 from bot.startEndDay.data import headers
+from requests.exceptions import Timeout, ConnectionError, RequestException
 
 
 async def getting_start(login, password) -> Union[object, dict, bool]:
@@ -63,5 +64,4 @@ async def getting_start(login, password) -> Union[object, dict, bool]:
         return session, status, csrf
 
     else:
-
         return False, False, False
