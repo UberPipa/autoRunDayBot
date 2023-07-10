@@ -30,4 +30,4 @@ kbr_plug.add(InlineKeyboardButton(text='Назад'.upper(), callback_data="stat
 
 kbr_chek = InlineKeyboardMarkup()
 """ Клавиатура при отсутсвии интернета или отвала битрикса """
-kbr_chek.add(InlineKeyboardButton(text='Проверить соединение'.upper(), callback_data="statusDay"))
+kbr_chek.add(InlineKeyboardButton(text='Проверить соединение'.upper(), callback_data="get_first_blood"))

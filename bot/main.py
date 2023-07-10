@@ -12,13 +12,13 @@ async def __on_start_up(dp: Dispatcher):
     register_all_filters(dp)
     register_all_handlers(dp)
     register_models()
-    task = asyncio.create_task(say_hello())
-    return task
+    # task = asyncio.create_task(say_hello())
+    # return task
 
-async def say_hello():
-    while True:
-        print("Привет")
-        await asyncio.sleep(2)
+# async def say_hello():
+#     while True:
+#         print("Привет")
+#         await asyncio.sleep(2)
 
 
 def start_bot():

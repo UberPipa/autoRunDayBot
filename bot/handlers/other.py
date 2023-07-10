@@ -11,7 +11,7 @@ from bot.database.models.users import Users, LastMsg, AutoManageDay
 from bot.handlers.logoPass.otherFuncForLogopass import firstStartInputLogopass
 from bot.keyboards.inline import inline_kbr_start, kbr_incorrect_logopass, kbr_yankee_go_home, kbr_plug, kbr_chek
 from bot.misc.env import Admins
-from bot.misc.states import referenceMenu
+from bot.misc.states import firstUse
 from bot.misc.util import generationTextFirstBlood
 from bot.startEndDay.actions.statusWork import getting_start
 
@@ -158,6 +158,101 @@ async def reference(call: types.CallbackQuery, state: FSMContext) -> None:
     )
 
 
+async def chek_inet(call: types.CallbackQuery, state: FSMContext) -> None:
+    """
+    Кнопка проверки интернета
+    :param call: call
+    :param state: FSMContext
+    :return: None
+    """
+
+    bot: Bot = call.bot
+    user_id = call.from_user.id
+
+    message_id = await get_last_msg(call)
+    reply_markup = types.InlineKeyboardMarkup()
+    try:
+        await bot.edit_message_reply_markup(
+            chat_id=call.from_user.id,
+            message_id=message_id,
+            reply_markup=reply_markup
+        )
+    except MessageNotModified:
+        pass
+
+    # Пытаемся получить id юзера
+    if not await get_yes_or_no(user_id, Users):
+        """ Создаются таблицы, если отсутсвуют """
+        await create_user(call)
+
+    if not await get_yes_or_no(user_id, LastMsg):
+        await create_last_msg_user(call)
+
+    if not await get_yes_or_no(user_id, AutoManageDay):
+        await create_auto_manage_day_user(call)
+
+    # Проверяем на присутсвие логопаса
+    if not await checkLogoPass(user_id):
+        # Eсли логопаса нет, запускаем функцию для ввода
+        await state.set_state(firstUse.INPUT_LOGIN)
+        await bot.send_message(
+            chat_id=user_id,
+            text='Привет, я помогаю управлять рабочим днём.\n'
+                 'Сначала вам нужно авторизоваться.\n'
+                 'Введите ваш логин без "<code>@stdpr.ru</code>"'
+        )
+
+    else:
+        # Если всё ок и есть логопас, то получаем данные конкретного юзера
+        user = Users.get_by_id(call.from_user.id)
+        login = user.login
+        password = user.password
+        # Получаем сессию
+
+        try:
+            """ Проверяем на доступность сервера """
+            session, status, csrf = await getting_start(login, password)
+            if status:
+                # Если логопас верен генерируем текст
+                answerText = await generationTextFirstBlood(status)
+
+                await create_last_msg_user(call)
+
+                sent_message = await bot.send_message(
+                    chat_id=user_id,
+                    text=answerText,
+                    reply_markup=inline_kbr_start
+                )
+
+                # get id msg from bot
+                message_id = sent_message.message_id
+                await update_last_msg(call, message_id)
+
+
+            else:
+                # Если логопас не верен
+                sent_message = await bot.send_message(
+                    chat_id=user_id,
+                    text='Неверно указан логин или пароль.',
+                    reply_markup=kbr_incorrect_logopass,
+                )
+
+                message_id = sent_message.message_id
+                await update_last_msg(call, message_id)
+
+        except (Timeout, ConnectionError, RequestException, ConnectTimeout) as e:
+            """ Если доступа нет, то отправляет месседж """
+
+            sent_message = await bot.send_message(
+                chat_id=user_id,
+                text='Отсутствует подключение к интернету или не доступен Битрикс',
+                reply_markup=kbr_chek,
+            )
+
+            message_id = sent_message.message_id
+            await update_last_msg(call, message_id)
+
+
 async def echo(msg: Message, state: FSMContext) -> None:
     """
     Eho
@@ -188,5 +283,6 @@ def register_other_handlers(dp: Dispatcher) -> None:
     dp.register_message_handler(first_blood, commands=['start'], state="*")
     dp.register_callback_query_handler(plug, lambda call: call.data == 'plug')
     dp.register_callback_query_handler(reference, lambda call: call.data == 'reference', state='*')
+    dp.register_callback_query_handler(chek_inet, lambda call: call.data == 'get_first_blood', state='*')
     """ ЭХО ФУНКЦИЯ ВСЕГДА ДОЛЖНА БЫТЬ В САМОМ НИЗУ!!! """
     dp.register_message_handler(echo, content_types=types.ContentType.ANY, state="*")
